@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111827">
+  <title>Sistema de Gestión — Escuela de Verano</title>
+  <style>
+    :root{
+      --bg:#0b1120;--panel:#111a2d;--panel2:#172238;--card:#131f34;--text:#edf3ff;
+      --muted:#9aa9c2;--line:rgba(148,163,184,.16);--accent:#7c6cf2;--accent2:#39b8d5;
+      --green:#35c58a;--yellow:#f3b84b;--red:#f16b78;--shadow:0 18px 50px rgba(0,0,0,.2);
+    }
+    body.light{--bg:#f3f6fb;--panel:#fff;--panel2:#f5f7fc;--card:#fff;--text:#172033;--muted:#66748b;--line:rgba(30,41,59,.12);--shadow:0 15px 40px rgba(30,41,59,.08)}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;transition:.2s}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .hidden{display:none!important}.muted{color:var(--muted)}.small{font-size:12px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}
+    .login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 15% 15%,rgba(124,108,242,.22),transparent 32%),radial-gradient(circle at 90% 85%,rgba(57,184,213,.14),transparent 30%),var(--bg)}
+    .login-card{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:32px;box-shadow:var(--shadow)}
+    .brand{display:flex;align-items:center;gap:12px}.brand-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:22px;font-weight:900}
+    h1,h2,h3,p{margin-top:0}h1{font-size:25px;line-height:1.2;margin:28px 0 8px}h2{font-size:21px;margin-bottom:4px}h3{font-size:15px;margin-bottom:12px}
+    .field{display:grid;gap:6px;margin:15px 0}.field label{font-size:12px;color:var(--muted);font-weight:700}
+    input,select,textarea{width:100%;padding:11px 12px;border-radius:11px;border:1px solid var(--line);background:var(--panel2);color:var(--text);outline:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,108,242,.12)}
+    .btn{border:0;border-radius:11px;padding:10px 14px;background:var(--accent);color:#fff;font-weight:750;transition:.18s}
+    .btn:hover{filter:brightness(1.1);transform:translateY(-1px)}.btn.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
+    .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}.btn.danger{background:#bd4358}.btn.success{background:#16865e}
+    .btn.block{width:100%;padding:12px}.demo-note{margin-top:15px;padding:11px 12px;background:rgba(124,108,242,.1);border:1px solid rgba(124,108,242,.2);border-radius:12px;color:var(--muted);font-size:12px}
+    .app{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
+    aside{background:var(--panel);border-right:1px solid var(--line);padding:22px 15px;display:flex;flex-direction:column;gap:24px}
+    .side-brand{padding:0 8px}.side-brand .brand-icon{width:39px;height:39px}.side-brand strong{font-size:13px;display:block}.side-brand span{font-size:11px;color:var(--muted)}
+    .nav-group{display:grid;gap:5px}.nav-title{padding:0 10px 5px;font-size:10px;letter-spacing:.13em;color:var(--muted);font-weight:850}
+    .nav-btn{width:100%;display:flex;align-items:center;gap:11px;padding:10px;border:0;border-radius:10px;background:transparent;color:var(--muted);text-align:left;font-weight:650}
+    .nav-btn:hover,.nav-btn.active{background:rgba(124,108,242,.13);color:var(--text)}.nav-btn.active{box-shadow:inset 3px 0 var(--accent)}
+    .nav-icon{width:20px;text-align:center;font-size:16px}.side-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}
+    main{min-width:0;padding:26px 30px 45px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:28px}
+    .top-actions{display:flex;align-items:center;gap:9px}.icon-btn{width:39px;height:39px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text)}
+    .profile{display:flex;align-items:center;gap:9px;padding-left:8px}.avatar{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#7668e8,#39b8d5);color:white;font-weight:850}
+    .page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;margin-bottom:22px}.page-head p{margin:5px 0 0;color:var(--muted)}
+    .grid{display:grid;gap:15px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}.two{grid-template-columns:1.35fr 1fr}.three{grid-template-columns:repeat(3,1fr)}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+    .stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;font-weight:700}.stat-icon{width:35px;height:35px;border-radius:11px;display:grid;place-items:center;background:rgba(124,108,242,.13);font-size:17px}
+    .stat-value{font-size:29px;font-weight:850;letter-spacing:-.04em;margin:10px 0 2px}.stat-foot{font-size:11px;color:var(--muted)}
+    .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:12px}th{color:var(--muted);font-weight:750}td{color:var(--text)}tr:last-child td{border-bottom:0}
+    .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:99px;font-size:10px;font-weight:800;background:rgba(53,197,138,.12);color:var(--green)}
+    .pill.warn{background:rgba(243,184,75,.13);color:var(--yellow)}.pill.red{background:rgba(241,107,120,.13);color:var(--red)}.pill.blue{background:rgba(57,184,213,.13);color:var(--accent2)}
+    .activity{display:grid;gap:14px}.activity-row{display:flex;gap:11px;align-items:flex-start}.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);margin-top:5px;flex:none}.activity-row p{margin:0;font-size:12px}.activity-row small{color:var(--muted)}
+    .help-banner{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:20px;border-radius:16px;background:linear-gradient(110deg,rgba(124,108,242,.22),rgba(57,184,213,.12));border:1px solid rgba(124,108,242,.22);margin-bottom:18px}
+    .help-banner p{margin:4px 0 0;color:var(--muted);font-size:12px}.help-banner .btn{white-space:nowrap}
+    .toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.toolbar input{max-width:280px}
+    .empty{padding:28px;text-align:center;color:var(--muted)}.notice{padding:12px;border-radius:11px;background:rgba(57,184,213,.1);color:var(--muted);font-size:12px;border:1px solid rgba(57,184,213,.18)}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,.68);display:grid;place-items:center;padding:18px;z-index:20}
+    .modal{width:min(500px,100%);background:var(--panel);border:1px solid var(--line);border-radius:19px;padding:22px;box-shadow:0 25px 80px rgba(0,0,0,.35)}
+    .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modal-head h3{margin:0;font-size:18px}
+    .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+    .toast{position:fixed;right:20px;bottom:20px;background:var(--panel);border:1px solid var(--line);padding:13px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:30;max-width:340px}
+    .help-alert{animation:pulse 1.4s infinite}@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(241,107,120,.13)}}
+    @media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+    @media(max-width:760px){.app{grid-template-columns:1fr}aside{position:sticky;top:0;z-index:5;padding:10px 12px;border-right:0;border-bottom:1px solid var(--line);gap:8px}.side-brand{display:none}.nav-group{display:flex;overflow:auto;gap:5px}.nav-title{display:none}.nav-btn{width:auto;white-space:nowrap;padding:9px}.nav-btn span:last-child{font-size:11px}.side-bottom{display:none}main{padding:20px 15px 35px}.topbar{margin-bottom:20px}.page-head{align-items:flex-start;flex-direction:column}.help-banner{align-items:flex-start;flex-direction:column}}
+    @media(max-width:430px){.stats{grid-template-columns:1fr 1fr;gap:9px}.card{padding:13px}.stat-value{font-size:24px}.profile .profile-text{display:none}.login-card{padding:23px}}
+  </style>
+</head>
+<body>
+  <!-- PROTOTIPO VISUAL: no usar con datos reales ni como sistema de autenticación. -->
+  <section id="loginScreen" class="login-wrap">
+    <div class="login-card">
+      <div class="brand">
+        <div class="brand-icon">EV</div>
+        <div><strong>SISTEMA DE GESTIÓN</strong><div class="muted small">Escuela de Verano</div></div>
+      </div>
+      <h1>Bienvenido/a</h1>
+      <p class="muted">Ingresá al espacio de gestión del personal.</p>
+      <div class="field"><label>Usuario de demostración</label><input id="loginName" value="Gena" autocomplete="off"></div>
+      <div class="field"><label>Perfil de demostración</label>
+        <select id="loginRole"><option value="SUPERADMIN">Superadministrador</option><option value="ADMIN">Administrador</option><option value="COORDINADOR">Coordinador</option><option value="PROFESOR">Profesor</option></select>
+      </div>
+      <button class="btn block" onclick="login()">Ingresar a la demo <span aria-hidden="true">→</span></button>
+      <div class="demo-note"><strong>Prototipo:</strong> el acceso es simulado para probar la interfaz. No hay contraseñas ni autenticación real.</div>
+    </div>
+  </section>
+
+  <div id="app" class="app hidden">
+    <aside>
+      <div class="side-brand brand">
+        <div class="brand-icon">EV</div>
+        <div><strong>ESCUELA DE VERANO</strong><span>Panel de gestión</span></div>
+      </div>
+      <div class="nav-group">
+        <div class="nav-title">GENERAL</div>
+        <button class="nav-btn active" data-page="dashboard"><span class="nav-icon">▦</span><span>Panel principal</span></button>
+        <button class="nav-btn" data-page="help"><span class="nav-icon">◉</span><span>Solicitar ayuda <span id="helpCount" class="pill red hidden">1</span></span></button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-title">GESTIÓN</div>
+        <button class="nav-btn" data-page="inventory"><span class="nav-icon">▤</span><span>Inventario</span></button>
+        <button class="nav-btn" data-page="movements"><span class="nav-icon">⇄</span><span>Movimientos</span></button>
+        <button class="nav-btn" data-page="templates"><span class="nav-icon">▧</span><span>Plantillas</span></button>
+        <button class="nav-btn" data-page="loans"><span class="nav-icon">↗</span><span>Préstamos</span></button>
+      </div>
+      <div class="nav-group">
+        <div class="nav-title">INSTITUCIÓN</div>
+        <button class="nav-btn" data-page="activities"><span class="nav-icon">▦</span><span>Actividades</span></button>
+        <button class="nav-btn" data-page="announcements"><span class="nav-icon">◈</span><span>Comunicados</span></button>
+      </div>
+      <div class="nav-group admin-only">
+        <div class="nav-title">ADMINISTRACIÓN</div>
+        <button class="nav-btn" data-page="users"><span class="nav-icon">♙</span><span>Personal y permisos</span></button>
+        <button class="nav-btn" data-page="reports"><span class="nav-icon">▥</span><span>Informes y auditoría</span></button>
+        <button class="nav-btn" data-page="settings"><span class="nav-icon">⚙</span><span>Configuración</span></button>
+      </div>
+      <div class="side-bottom">
+        <button class="nav-btn" onclick="logout()"><span class="nav-icon">↪</span><span>Cerrar sesión</span></button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div><div class="eyebrow">ESCUELA DE VERANO / GESTIÓN INTERNA</div><div class="muted small" id="todayLabel"></div></div>
+        <div class="top-actions">
+          <button class="icon-btn" title="Cambiar tema" onclick="toggleTheme()">◐</button>
+          <button class="icon-btn" title="Notificaciones" onclick="showToast('No hay notificaciones nuevas.')">♧</button>
+          <div class="profile"><div class="avatar" id="avatar">G</div><div class="profile-text"><strong id="userName">Gena</strong><div class="muted small" id="userRole">SUPERADMIN</div></div></div>
+        </div>
+      </header>
+      <section id="pageContent"></section>
+    </main>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div id="toastRoot"></div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    let currentUser = {name:"Gena", role:"SUPERADMIN"};
+    let helpRequests = [
+      {id:1, person:"María López", role:"PROFESOR", type:"Materiales", priority:"Normal", detail:"Necesito conos para la actividad de la cancha.", status:"Pendiente", time:"Hoy · 10:32"}
+    ];
+    let movements = [
+      {date:"Hoy · 10:18", user:"María López", action:"Retiró", item:"Pelotas de fútbol", qty:4},
+      {date:"Hoy · 09:45", user:"Carlos Díaz", action:"Devolvió", item:"Conos", qty:12},
+      {date:"Ayer · 16:20", user:"Gena", action:"Registró", item:"Cuerdas", qty:8}
+    ];
+    let items = [
+      {code:"DEP-001",name:"Pelotas de fútbol",category:"Deportivo",total:20,available:14,location:"Depósito A",state:"Bueno"},
+      {code:"DEP-002",name:"Conos de entrenamiento",category:"Deportivo",total:30,available:18,location:"Depósito A",state:"Bueno"},
+      {code:"REC-001",name:"Cuerdas para saltar",category:"Recreativo",total:15,available:15,location:"Armario 2",state:"Bueno"},
+      {code:"NAT-001",name:"Tablas de natación",category:"Natación",total:10,available:3,location:"Pileta",state:"Revisar"},
+      {code:"LIM-001",name:"Elementos de limpieza",category:"Limpieza",total:12,available:4,location:"Depósito B",state:"Bueno"}
+    ];
+    let currentPage = "dashboard";
+
+    function login(){
+      const name = ($("#loginName").value || "Usuario").trim();
+      currentUser = {name,role:$("#loginRole").value};
+      $("#loginScreen").classList.add("hidden");$("#app").classList.remove("hidden");
+      $("#userName").textContent=name;$("#userRole").textContent=currentUser.role;
+      $("#avatar").textContent=name.charAt(0).toUpperCase();
+      document.querySelectorAll(".admin-only").forEach(el=>el.classList.toggle("hidden",!["SUPERADMIN","ADMIN"].includes(currentUser.role)));
+      $("#todayLabel").textContent=new Intl.DateTimeFormat("es-AR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date());
+      renderPage("dashboard");
+    }
+    function logout(){$("#app").classList.add("hidden");$("#loginScreen").classList.remove("hidden")}
+    function toggleTheme(){document.body.classList.toggle("light")}
+    function isAdmin(){return ["SUPERADMIN","ADMIN"].includes(currentUser.role)}
+    document.querySelectorAll(".nav-btn[data-page]").forEach(btn=>btn.addEventListener("click",()=>renderPage(btn.dataset.page)));
+
+    function renderPage(page){
+      currentPage=page;
+      document.querySelectorAll(".nav-btn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+      const pages={dashboard:dashboardPage,inventory:inventoryPage,movements:movementsPage,help:helpPage,templates:templatesPage,loans:loansPage,activities:activitiesPage,announcements:announcementsPage,users:usersPage,reports:reportsPage,settings:settingsPage};
+      (pages[page]||dashboardPage)();
+    }
+    function pageHead(title,sub,action=""){return `<div class="page-head"><div><div class="eyebrow">GESTIÓN INSTITUCIONAL</div><h2>${title}</h2><p>${sub}</p></div>${action}</div>`}
+    function dashboardPage(){
+      $("#pageContent").innerHTML=`
+        ${pageHead("Panel principal","Resumen general de la escuela de verano.",`<button class="btn secondary" onclick="showToast('En la versión final se generarán informes.')">↓ Exportar</button>`)}
+        <div class="help-banner"><div><strong>¿Necesitás asistencia?</strong><p>Solicitá apoyo al equipo de coordinación.</p></div><button class="btn" onclick="openHelpModal()">＋ Pedir ayuda</button></div>
+        <div class="grid stats">
+          ${stat("Artículos registrados",items.reduce((a,x)=>a+x.total,0),"▤","Inventario general")}
+          ${stat("Disponibles",items.reduce((a,x)=>a+x.available,0),"✓","Unidades disponibles")}
+          ${stat("Solicitudes abiertas",helpRequests.filter(x=>x.status!=="Resuelta").length,"◉","Asistencia interna")}
+          ${stat("Movimientos recientes",movements.length,"⇄","Actividad registrada")}
+        </div>
+        <div class="grid two">
+          <div class="card"><h3>Últimos movimientos</h3>${movementTable(movements.slice(0,4))}</div>
+          <div class="card"><h3>Actividad reciente</h3><div class="activity">
+            <div class="activity-row"><span class="dot"></span><p><strong>Inventario actualizado</strong><br><small>Se registró una devolución · Hoy</small></p></div>
+            <div class="activity-row"><span class="dot" style="background:var(--yellow)"></span><p><strong>Stock bajo</strong><br><small>Tablas de natación · 3 disponibles</small></p></div>
+            <div class="activity-row"><span class="dot" style="background:var(--accent2)"></span><p><strong>Solicitud de ayuda</strong><br><small>Hay ${helpRequests.length} solicitud(es) en el panel</small></p></div>
+          </div></div>
+        </div>
+        <div class="notice" style="margin-top:16px">Vista de demostración: los datos son ficticios y se mantienen solamente en la memoria de esta página.</div>`;
+    }
+    function stat(label,value,icon,foot){return `<div class="card"><div class="stat-top"><span>${label}</span><span class="stat-icon">${icon}</span></div><div class="stat-value">${value}</div><div class="stat-foot">${foot}</div></div>`}
+    function movementTable(rows){return `<div class="table-wrap"><table><thead><tr><th>FECHA</th><th>RESPONSABLE</th><th>OPERACIÓN</th><th>CANT.</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${x.date}</td><td>${x.user}</td><td>${x.action} · ${x.item}</td><td>${x.qty}</td></tr>`).join("")||`<tr><td colspan="4">Sin movimientos.</td></tr>`}</tbody></table></div>`}
+    function inventoryPage(){
+      $("#pageContent").innerHTML=`${pageHead("Inventario","Consultá los materiales, cantidades y ubicaciones.",`<button class="btn" onclick="openItemModal()">＋ Nuevo artículo</button>`)}
+      <div class="toolbar"><input id="itemSearch" placeholder="Buscar artículo..." oninput="filterItems()"><select id="categoryFilter" onchange="filterItems()" style="max-width:190px"><option value="">Todas las categorías</option><option>Deportivo</option><option>Recreativo</option><option>Natación</option><option>Limpieza</option></select></div>
+      <div class="card"><div class="table-wrap"><table><thead><tr><th>CÓDIGO</th><th>ARTÍCULO</th><th>CATEGORÍA</th><th>TOTAL</th><th>DISPONIBLE</th><th>UBICACIÓN</th><th>ESTADO</th><th></th></tr></thead><tbody id="itemRows"></tbody></table></div></div>`;
+      filterItems();
+    }
+    function filterItems(){
+      const q=($("#itemSearch")?.value||"").toLowerCase(),cat=$("#categoryFilter")?.value||"";
+      const rows=items.filter(x=>(x.name.toLowerCase().includes(q)||x.code.toLowerCase().includes(q))&&(!cat||x.category===cat));
+      $("#itemRows").innerHTML=rows.map((x,i)=>`<tr><td>${x.code}</td><td><strong>${x.name}</strong></td><td>${x.category}</td><td>${x.total}</td><td>${x.available}</td><td>${x.location}</td><td><span class="pill ${x.available<=5?"warn":""}">${x.state}</span></td><td><button class="btn secondary small" onclick="openMovementModal(${items.indexOf(x)})">Movimiento</button></td></tr>`).join("")||`<tr><td colspan="8" class="empty">No se encontraron artículos.</td></tr>`;
+    }
+    function movementsPage(){$("#pageContent").innerHTML=`${pageHead("Movimientos","Registro de entradas, salidas y devoluciones.",`<button class="btn" onclick="openMovementModal()">＋ Registrar movimiento</button>`)}<div class="card">${movementTable(movements)}</div>`}
+    function helpPage(){
+      const pending=helpRequests.filter(x=>x.status==="Pendiente").length;
+      $("#pageContent").innerHTML=`${pageHead("Solicitudes de ayuda","Asistencia interna entre profesores, coordinación y administración.",`<button class="btn" onclick="openHelpModal()">＋ Nueva solicitud</button>`)}
+      ${isAdmin()?`<div class="grid stats">${stat("Pendientes",pending,"◉","Esperando atención")}${stat("En atención",helpRequests.filter(x=>x.status==="En atención").length,"◷","En curso")}${stat("Resueltas",helpRequests.filter(x=>x.status==="Resuelta").length,"✓","Finalizadas")}${stat("Total",helpRequests.length,"▤","Solicitudes registradas")}</div>`:""}
+      <div class="card"><h3>Solicitudes registradas</h3><div class="table-wrap"><table><thead><tr><th>FECHA</th><th>PERSONA</th><th>MOTIVO</th><th>PRIORIDAD</th><th>ESTADO</th><th>DETALLE</th><th>ACCIÓN</th></tr></thead><tbody>${helpRequests.map(x=>`<tr><td>${x.time}</td><td>${x.person}</td><td>${x.type}</td><td><span class="pill ${x.priority==="Urgente"?"red":"blue"}">${x.priority}</span></td><td><span class="pill ${x.status==="Pendiente"?"warn":x.status==="Resuelta"?"":"blue"}">${x.status}</span></td><td>${x.detail}</td><td>${isAdmin()&&x.status!=="Resuelta"?`<button class="btn secondary small" onclick="advanceHelp(${x.id})">${x.status==="Pendiente"?"Tomar":"Resolver"}</button>`:"—"}</td></tr>`).join("")||`<tr><td colspan="7" class="empty">Todavía no hay solicitudes.</td></tr>`}</tbody></table></div></div>`;
+      $("#helpCount").classList.toggle("hidden",pending===0);$("#helpCount").textContent=pending;
+    }
+    function templatesPage(){
+      $("#pageContent").innerHTML=`${pageHead("Plantillas","Formularios para registrar operaciones de manera uniforme.",isAdmin()?`<button class="btn" onclick="openTemplateModal()">＋ Crear plantilla</button>`:"")}
+      <div class="grid three">
+        ${templateCard("Registro de salida","Registrar materiales retirados por el personal.","▤")}
+        ${templateCard("Registro de devolución","Registrar materiales que regresan al depósito.","↩")}
+        ${templateCard("Reporte de daños","Informar materiales deteriorados o perdidos.","⚠")}
+      </div><div class="notice" style="margin-top:16px">En esta maqueta las plantillas son ejemplos visuales. El constructor real permitirá agregar campos personalizados y controlar quién puede utilizarlos.</div>`;
+    }
+    function templateCard(title,desc,icon){return `<div class="card"><div class="stat-icon">${icon}</div><h3 style="margin-top:14px">${title}</h3><p class="muted small">${desc}</p><button class="btn secondary small" onclick="showToast('Vista de plantilla de demostración.')">Ver plantilla</button></div>`}
+    function loansPage(){$("#pageContent").innerHTML=`${pageHead("Préstamos y devoluciones","Seguimiento de materiales entregados al personal.")}<div class="card empty">Todavía no hay préstamos registrados en esta demostración.</div>`}
+    function activitiesPage(){$("#pageContent").innerHTML=`${pageHead("Actividades","Organización interna de actividades de verano.")}<div class="grid three">${templateCard("Deportes","Actividades deportivas y materiales asociados.","⚽")}${templateCard("Recreación","Juegos y propuestas recreativas.","☀")}${templateCard("Natación","Actividades en el sector de pileta.","◉")}</div>`}
+    function announcementsPage(){$("#pageContent").innerHTML=`${pageHead("Comunicados","Avisos internos para el personal.")}<div class="card"><h3>Bienvenidos al espacio de gestión</h3><p class="muted">Acá aparecerán los comunicados publicados por coordinación y administración.</p><span class="pill blue">Ejemplo</span></div>`}
+    function usersPage(){
+      if(!isAdmin()){showToast("No tenés permisos para ver esta sección.");return renderPage("dashboard")}
+      $("#pageContent").innerHTML=`${pageHead("Personal y permisos","Administración de cuentas y niveles de acceso.",`<button class="btn" onclick="showToast('La creación real de cuentas se implementará con autenticación segura.')">＋ Crear usuario</button>`)}
+      <div class="card"><h3>Jerarquía de acceso</h3><div class="grid two"><div><strong>SUPERADMIN</strong><p class="muted small">Control total del sistema.</p></div><div><strong>ADMIN</strong><p class="muted small">Administración según permisos asignados.</p></div><div><strong>COORDINADOR</strong><p class="muted small">Supervisión y asistencia.</p></div><div><strong>PROFESOR</strong><p class="muted small">Operaciones habilitadas y solicitud de ayuda.</p></div></div></div>`;
+    }
+    function reportsPage(){if(!isAdmin())return;$("#pageContent").innerHTML=`${pageHead("Informes y auditoría","Consultá la actividad registrada en el sistema.")}<div class="grid three">${stat("Movimientos",movements.length,"⇄","Datos de demostración")}${stat("Solicitudes",helpRequests.length,"◉","Datos de demostración")}${stat("Artículos",items.length,"▤","Artículos de ejemplo")}</div><div class="notice" style="margin-top:16px">La auditoría real será inalterable desde las pantallas habituales y registrará usuario, fecha, acción y cambios.</div>`}
+    function settingsPage(){if(!isAdmin())return;$("#pageContent").innerHTML=`${pageHead("Configuración","Preferencias generales de la plataforma.")}<div class="card"><h3>Apariencia</h3><p class="muted small">Elegí el tema que preferís utilizar.</p><button class="btn secondary" onclick="toggleTheme()">Cambiar tema claro / oscuro</button><hr style="border:0;border-top:1px solid var(--line);margin:20px 0"><h3>Estado del prototipo</h3><span class="pill warn">Modo demostración</span><p class="muted small" style="margin-top:10px">No hay servidor ni base de datos conectados.</p></div>`}
+
+    function openModal(title,body,onSave,label="Guardar"){
+      $("#modalRoot").innerHTML=`<div class="modal-backdrop" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modal-head"><h3>${title}</h3><button class="icon-btn" onclick="closeModal()">✕</button></div>${body}<div class="modal-actions"><button class="btn secondary" onclick="closeModal()">Cancelar</button><button class="btn" id="modalSave">${label}</button></div></div></div>`;
+      $("#modalSave").onclick=onSave;
+    }
+    function closeModal(){$("#modalRoot").innerHTML=""}
+    function openHelpModal(){
+      openModal("Solicitar asistencia",`
+        <div class="field"><label>Tipo de solicitud</label><select id="helpType"><option>Actividad</option><option>Materiales</option><option>Coordinación</option><option>Convivencia</option><option>Otro</option></select></div>
+        <div class="field"><label>Prioridad</label><select id="helpPriority"><option>Normal</option><option>Urgente</option></select></div>
+        <div class="field"><label>Descripción</label><textarea id="helpDetail" rows="3" placeholder="Contá brevemente qué necesitás..."></textarea></div>
+        <div class="notice">Se registrará tu usuario y la hora de envío. En esta demo no se envían alertas a otros dispositivos.</div>`,
+        ()=>{
+          const detail=$("#helpDetail").value.trim();if(!detail){showToast("Escribí una descripción para continuar.");return}
+          helpRequests.unshift({id:Date.now(),person:currentUser.name,role:currentUser.role,type:$("#helpType").value,priority:$("#helpPriority").value,detail,status:"Pendiente",time:"Ahora"});
+          closeModal();showToast("Solicitud agregada a la demostración.");renderPage("help");
+        },"Enviar solicitud");
+    }
+    function advanceHelp(id){
+      if(!isAdmin()){showToast("No tenés permisos.");return}
+      const x=helpRequests.find(x=>x.id===id);if(!x)return;
+      x.status=x.status==="Pendiente"?"En atención":"Resuelta";
+      showToast("Estado actualizado en la demostración.");renderPage("help");
+    }
+    function openItemModal(){
+      if(!isAdmin()){showToast("Solo administración puede crear artículos en esta demo.");return}
+      openModal("Nuevo artículo",`<div class="field"><label>Nombre</label><input id="newItemName" placeholder="Ej. Aros deportivos"></div><div class="field"><label>Categoría</label><select id="newItemCat"><option>Deportivo</option><option>Recreativo</option><option>Natación</option><option>Limpieza</option><option>Didáctico</option></select></div><div class="field"><label>Cantidad inicial</label><input id="newItemQty" type="number" min="0" value="1"></div><div class="field"><label>Ubicación</label><input id="newItemLoc" placeholder="Ej. Depósito A"></div>`,()=>{
+        const name=$("#newItemName").value.trim(),qty=Number($("#newItemQty").value);if(!name||qty<0){showToast("Completá los datos correctamente.");return}
+        items.push({code:"NUE-"+String(items.length+1).padStart(3,"0"),name,category:$("#newItemCat").value,total:qty,available:qty,location:$("#newItemLoc").value||"Sin asignar",state:"Bueno"});
+        closeModal();renderPage("inventory");showToast("Artículo agregado a la demo.");
+      });
+    }
+    function openMovementModal(index){
+      const opts=items.map((x,i)=>`<option value="${i}" ${index===i?"selected":""}>${x.name} (${x.available} disponibles)</option>`).join("");
+      openModal("Registrar movimiento",`<div class="field"><label>Tipo de operación</label><select id="moveType"><option>Salida</option><option>Entrada / devolución</option></select></div><div class="field"><label>Artículo</label><select id="moveItem">${opts}</select></div><div class="field"><label>Cantidad</label><input id="moveQty" type="number" min="1" value="1"></div><div class="field"><label>Destino / motivo</label><input id="moveReason" placeholder="Ej. Actividad en cancha"></div>`,()=>{
+        const item=items[Number($("#moveItem").value)],qty=Number($("#moveQty").value),type=$("#moveType").value;
+        if(!item||qty<1||!Number.isInteger(qty)){showToast("Ingresá una cantidad válida.");return}
+        if(type==="Salida"&&qty>item.available){showToast("No hay suficiente stock disponible.");return}
+        if(type!=="Salida"&&qty+item.available>item.total){showToast("La cantidad supera el stock total registrado.");return}
+        item.available+=type==="Salida"?-qty:qty;
+        movements.unshift({date:"Ahora",user:currentUser.name,action:type==="Salida"?"Retiró":"Devolvió",item:item.name,qty});
+        closeModal();renderPage("inventory");showToast("Movimiento agregado a la demo.");
+      });
+    }
+    function openTemplateModal(){
+      if(!isAdmin())return;
+      openModal("Crear plantilla",`<div class="field"><label>Nombre de la plantilla</label><input id="templateName" placeholder="Ej. Salida de materiales"></div><div class="field"><label>Descripción</label><textarea id="templateDesc" rows="3" placeholder="¿Para qué se utilizará?"></textarea></div><div class="notice">En la versión completa podrás agregar campos, validaciones, opciones y permisos por rol.</div>`,()=>{if(!$("#templateName").value.trim()){showToast("Ingresá un nombre.");return}closeModal();showToast("Plantilla de ejemplo creada visualmente.")});
+    }
+    function showToast(message){
+      $("#toastRoot").innerHTML=`<div class="toast">${message}</div>`;
+      setTimeout(()=>$("#toastRoot").innerHTML="",2800);
+    }
+  </script>
+</body>
+</html>
