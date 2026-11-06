@@ -1,288 +1,215 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#111827">
-  <title>Sistema de Gestión — Escuela de Verano</title>
-  <style>
-    :root{
-      --bg:#0b1120;--panel:#111a2d;--panel2:#172238;--card:#131f34;--text:#edf3ff;
-      --muted:#9aa9c2;--line:rgba(148,163,184,.16);--accent:#7c6cf2;--accent2:#39b8d5;
-      --green:#35c58a;--yellow:#f3b84b;--red:#f16b78;--shadow:0 18px 50px rgba(0,0,0,.2);
-    }
-    body.light{--bg:#f3f6fb;--panel:#fff;--panel2:#f5f7fc;--card:#fff;--text:#172033;--muted:#66748b;--line:rgba(30,41,59,.12);--shadow:0 15px 40px rgba(30,41,59,.08)}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;transition:.2s}
-    button,input,select,textarea{font:inherit}button{cursor:pointer}
-    .hidden{display:none!important}.muted{color:var(--muted)}.small{font-size:12px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}
-    .login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 15% 15%,rgba(124,108,242,.22),transparent 32%),radial-gradient(circle at 90% 85%,rgba(57,184,213,.14),transparent 30%),var(--bg)}
-    .login-card{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:32px;box-shadow:var(--shadow)}
-    .brand{display:flex;align-items:center;gap:12px}.brand-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:22px;font-weight:900}
-    h1,h2,h3,p{margin-top:0}h1{font-size:25px;line-height:1.2;margin:28px 0 8px}h2{font-size:21px;margin-bottom:4px}h3{font-size:15px;margin-bottom:12px}
-    .field{display:grid;gap:6px;margin:15px 0}.field label{font-size:12px;color:var(--muted);font-weight:700}
-    input,select,textarea{width:100%;padding:11px 12px;border-radius:11px;border:1px solid var(--line);background:var(--panel2);color:var(--text);outline:none}
-    input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,108,242,.12)}
-    .btn{border:0;border-radius:11px;padding:10px 14px;background:var(--accent);color:#fff;font-weight:750;transition:.18s}
-    .btn:hover{filter:brightness(1.1);transform:translateY(-1px)}.btn.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}
-    .btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}.btn.danger{background:#bd4358}.btn.success{background:#16865e}
-    .btn.block{width:100%;padding:12px}.demo-note{margin-top:15px;padding:11px 12px;background:rgba(124,108,242,.1);border:1px solid rgba(124,108,242,.2);border-radius:12px;color:var(--muted);font-size:12px}
-    .app{min-height:100vh;display:grid;grid-template-columns:250px 1fr}
-    aside{background:var(--panel);border-right:1px solid var(--line);padding:22px 15px;display:flex;flex-direction:column;gap:24px}
-    .side-brand{padding:0 8px}.side-brand .brand-icon{width:39px;height:39px}.side-brand strong{font-size:13px;display:block}.side-brand span{font-size:11px;color:var(--muted)}
-    .nav-group{display:grid;gap:5px}.nav-title{padding:0 10px 5px;font-size:10px;letter-spacing:.13em;color:var(--muted);font-weight:850}
-    .nav-btn{width:100%;display:flex;align-items:center;gap:11px;padding:10px;border:0;border-radius:10px;background:transparent;color:var(--muted);text-align:left;font-weight:650}
-    .nav-btn:hover,.nav-btn.active{background:rgba(124,108,242,.13);color:var(--text)}.nav-btn.active{box-shadow:inset 3px 0 var(--accent)}
-    .nav-icon{width:20px;text-align:center;font-size:16px}.side-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:14px}
-    main{min-width:0;padding:26px 30px 45px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:28px}
-    .top-actions{display:flex;align-items:center;gap:9px}.icon-btn{width:39px;height:39px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text)}
-    .profile{display:flex;align-items:center;gap:9px;padding-left:8px}.avatar{width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#7668e8,#39b8d5);color:white;font-weight:850}
-    .page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;margin-bottom:22px}.page-head p{margin:5px 0 0;color:var(--muted)}
-    .grid{display:grid;gap:15px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px}.two{grid-template-columns:1.35fr 1fr}.three{grid-template-columns:repeat(3,1fr)}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
-    .stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;font-weight:700}.stat-icon{width:35px;height:35px;border-radius:11px;display:grid;place-items:center;background:rgba(124,108,242,.13);font-size:17px}
-    .stat-value{font-size:29px;font-weight:850;letter-spacing:-.04em;margin:10px 0 2px}.stat-foot{font-size:11px;color:var(--muted)}
-    .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:12px}th{color:var(--muted);font-weight:750}td{color:var(--text)}tr:last-child td{border-bottom:0}
-    .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 8px;border-radius:99px;font-size:10px;font-weight:800;background:rgba(53,197,138,.12);color:var(--green)}
-    .pill.warn{background:rgba(243,184,75,.13);color:var(--yellow)}.pill.red{background:rgba(241,107,120,.13);color:var(--red)}.pill.blue{background:rgba(57,184,213,.13);color:var(--accent2)}
-    .activity{display:grid;gap:14px}.activity-row{display:flex;gap:11px;align-items:flex-start}.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);margin-top:5px;flex:none}.activity-row p{margin:0;font-size:12px}.activity-row small{color:var(--muted)}
-    .help-banner{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:20px;border-radius:16px;background:linear-gradient(110deg,rgba(124,108,242,.22),rgba(57,184,213,.12));border:1px solid rgba(124,108,242,.22);margin-bottom:18px}
-    .help-banner p{margin:4px 0 0;color:var(--muted);font-size:12px}.help-banner .btn{white-space:nowrap}
-    .toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.toolbar input{max-width:280px}
-    .empty{padding:28px;text-align:center;color:var(--muted)}.notice{padding:12px;border-radius:11px;background:rgba(57,184,213,.1);color:var(--muted);font-size:12px;border:1px solid rgba(57,184,213,.18)}
-    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,.68);display:grid;place-items:center;padding:18px;z-index:20}
-    .modal{width:min(500px,100%);background:var(--panel);border:1px solid var(--line);border-radius:19px;padding:22px;box-shadow:0 25px 80px rgba(0,0,0,.35)}
-    .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modal-head h3{margin:0;font-size:18px}
-    .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
-    .toast{position:fixed;right:20px;bottom:20px;background:var(--panel);border:1px solid var(--line);padding:13px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:30;max-width:340px}
-    .help-alert{animation:pulse 1.4s infinite}@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(241,107,120,.13)}}
-    @media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
-    @media(max-width:760px){.app{grid-template-columns:1fr}aside{position:sticky;top:0;z-index:5;padding:10px 12px;border-right:0;border-bottom:1px solid var(--line);gap:8px}.side-brand{display:none}.nav-group{display:flex;overflow:auto;gap:5px}.nav-title{display:none}.nav-btn{width:auto;white-space:nowrap;padding:9px}.nav-btn span:last-child{font-size:11px}.side-bottom{display:none}main{padding:20px 15px 35px}.topbar{margin-bottom:20px}.page-head{align-items:flex-start;flex-direction:column}.help-banner{align-items:flex-start;flex-direction:column}}
-    @media(max-width:430px){.stats{grid-template-columns:1fr 1fr;gap:9px}.card{padding:13px}.stat-value{font-size:24px}.profile .profile-text{display:none}.login-card{padding:23px}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0f1e">
+<title>Sistema de Gestión — Escuela de Verano</title>
+<style>
+:root{--bg:#0a0f1e;--panel:#0f1729;--panel2:#16213a;--card:#111b31;--text:#e9efff;--muted:#8fa0bf;--line:rgba(148,163,184,.16);--acc:#7c6cf2;--acc2:#38bdf8;--ok:#34d399;--warn:#f5b84b;--bad:#f87171;--shadow:0 10px 30px rgba(0,0,0,.25);color-scheme:dark}
+[data-theme=light]{--bg:#f2f5fb;--panel:#fff;--panel2:#eef2fa;--card:#fff;--text:#14203a;--muted:#5d6b86;--line:rgba(20,32,58,.12);--acc:#5b4bd6;--acc2:#0b8bc4;--ok:#0f9d6b;--warn:#b7791f;--bad:#d64550;--shadow:0 8px 24px rgba(20,32,58,.07);color-scheme:light}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}.hidden{display:none!important}.muted{color:var(--muted)}.sm{font-size:12px}
+h1,h2,h3,h4,p{margin:0}h2{font-size:22px;letter-spacing:-.02em}h3{font-size:15px;margin-bottom:12px}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:2px solid var(--acc2);outline-offset:2px}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid transparent;border-radius:10px;padding:9px 14px;background:linear-gradient(135deg,var(--acc),#4f6df0);color:#fff;font-weight:650;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.1);transform:translateY(-1px)}.btn:active{transform:none}.btn.s{background:var(--panel2);border-color:var(--line);color:var(--text)}.btn.d{background:var(--bad);color:#fff}.btn.sm{padding:5px 10px;font-size:12px}.btn[disabled]{opacity:.5;pointer-events:none}
+.ib{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--line);border-radius:10px;background:var(--panel);position:relative}.ib:hover{background:var(--panel2)}
+.field{display:grid;gap:5px;margin:13px 0}.field label,.lbl{font-size:12px;font-weight:650;color:var(--muted)}
+input,select,textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 22%,transparent)}
+input[type=checkbox],input[type=radio],input[type=range]{width:auto;padding:0;accent-color:var(--acc)}input[readonly],input:disabled{opacity:.65}
+[aria-invalid=true]{border-color:var(--bad)}.err{color:var(--bad);font-size:12px}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 12% 10%,color-mix(in srgb,var(--acc) 28%,transparent),transparent 35%),radial-gradient(circle at 90% 90%,color-mix(in srgb,var(--acc2) 20%,transparent),transparent 32%),var(--bg)}
+.lcard{width:min(420px,100%);background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:30px;box-shadow:var(--shadow);animation:up .4s both}
+.brand{display:flex;align-items:center;gap:11px}.logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-weight:800}
+.note{padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--acc2) 11%,transparent);border:1px solid color-mix(in srgb,var(--acc2) 22%,transparent);color:var(--muted);font-size:12px}
+.app{display:grid;grid-template-columns:244px 1fr;min-height:100vh}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh;overflow:auto}
+nav{display:flex;flex-direction:column;gap:3px}.gt{padding:12px 10px 4px;font-size:10px;letter-spacing:.13em;color:var(--muted);font-weight:800}
+.nb{display:flex;align-items:center;gap:10px;padding:9px 10px;border:0;border-radius:9px;background:none;color:var(--muted);font-weight:600;text-align:left;width:100%;transition:background .15s,color .15s}
+.nb:hover{background:var(--panel2);color:var(--text)}.nb[aria-current=page]{background:color-mix(in srgb,var(--acc) 16%,transparent);color:var(--text);box-shadow:inset 3px 0 var(--acc)}
+.badge{margin-left:auto;min-width:18px;padding:0 6px;border-radius:99px;background:var(--bad);color:#fff;font-size:10px;font-weight:800;text-align:center}
+main{min-width:0;padding:22px 28px 48px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.row{display:flex;align-items:center;gap:8px}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;font-weight:800}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:18px;flex-wrap:wrap}.head p{color:var(--muted);margin-top:3px}
+.g{display:grid;gap:14px}.stats{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:14px}.two{grid-template-columns:1.4fr 1fr}.three{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);animation:up .35s both;animation-delay:calc(var(--n,0)*40ms)}
+.sv{font-size:28px;font-weight:800;letter-spacing:-.03em;margin:6px 0 0}.si{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--acc) 15%,transparent);color:var(--acc2)}
+.tw{overflow:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);font-size:12.5px}th{color:var(--muted);font-weight:700}th button{background:none;border:0;font-weight:700;color:inherit;padding:0}tr:last-child td{border:0}tbody tr:hover{background:var(--panel2)}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700;background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}.pill.w{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}.pill.r{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}.pill.b{background:color-mix(in srgb,var(--acc2) 16%,transparent);color:var(--acc2)}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.bar select,.search{max-width:210px;flex:1 1 150px}.search{position:relative;max-width:300px}.search .i{position:absolute;left:10px;top:11px;color:var(--muted)}.search input{padding-left:34px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}.seg button{border:0;background:var(--panel);padding:8px 11px}.seg [aria-pressed=true]{background:var(--acc);color:#fff}
+.sb{height:6px;border-radius:9px;background:var(--panel2);min-width:60px;overflow:hidden}.sb i{display:block;height:100%;border-radius:9px}
+.ban{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:12px 16px;border-radius:12px;margin-bottom:16px;background:color-mix(in srgb,var(--bad) 12%,var(--card));border:1px solid color-mix(in srgb,var(--bad) 40%,transparent);animation:up .3s both}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--bad);display:inline-block;margin-right:8px;animation:pulse 1.6s infinite}
+.cta{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:18px;border-radius:14px;margin-bottom:14px;background:linear-gradient(110deg,color-mix(in srgb,var(--acc) 24%,transparent),color-mix(in srgb,var(--acc2) 12%,transparent));border:1px solid color-mix(in srgb,var(--acc) 30%,transparent)}
+.empty{padding:34px 16px;text-align:center;color:var(--muted)}.empty .i{width:34px;height:34px;opacity:.6;margin-bottom:6px}
+.sk{height:90px;border-radius:14px;background:linear-gradient(90deg,var(--card),var(--panel2),var(--card));background-size:200% 100%;animation:sh 1s infinite}
+.mb{position:fixed;inset:0;background:rgba(3,7,18,.65);display:grid;place-items:center;padding:16px;z-index:50;animation:fade .15s both}
+.modal{width:min(520px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 24px 70px rgba(0,0,0,.4);animation:pop .2s both}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.mh h3{margin:0;font-size:17px}.ma{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+#toasts{position:fixed;right:16px;bottom:16px;display:grid;gap:8px;z-index:60}.toast{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--acc2);padding:11px 14px;border-radius:10px;box-shadow:var(--shadow);max-width:320px;animation:up .25s both}.toast.ok{border-left-color:var(--ok)}.toast.er{border-left-color:var(--bad)}
+.tpl{display:grid;grid-template-columns:150px 1fr 1fr;gap:14px}.fl{display:grid;gap:8px}.fi{display:grid;gap:6px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}.sec{padding-top:8px;border-top:1px solid var(--line);margin-top:6px}
+.chart{width:100%;height:auto}.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+@keyframes up{from{opacity:0;transform:translateY(8px)}}@keyframes fade{from{opacity:0}}@keyframes pop{from{opacity:0;transform:scale(.96) translateY(6px)}}@keyframes sh{to{background-position:-200% 0}}@keyframes pulse{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--bad) 20%,transparent)}}
+@media(max-width:1000px){.two,.tpl{grid-template-columns:1fr}}
+@media(max-width:760px){.app{display:block}aside{position:fixed;inset:auto 0 0 0;height:auto;flex-direction:row;padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:40;border:0;border-top:1px solid var(--line)}aside .brand,.gt,.nm{display:none}nav{flex-direction:row;overflow-x:auto;gap:2px;width:100%}.nb{flex-direction:column;gap:2px;font-size:10px;padding:6px 10px;width:auto;white-space:nowrap}.nb[aria-current=page]{box-shadow:none}.nb .badge{position:absolute;margin:0;transform:translate(14px,-8px)}.nb{position:relative}main{padding:16px 14px calc(88px + env(safe-area-inset-bottom))}#toasts{bottom:84px;left:12px;right:12px}.tl{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
-  <!-- PROTOTIPO VISUAL: no usar con datos reales ni como sistema de autenticación. -->
-  <section id="loginScreen" class="login-wrap">
-    <div class="login-card">
-      <div class="brand">
-        <div class="brand-icon">EV</div>
-        <div><strong>SISTEMA DE GESTIÓN</strong><div class="muted small">Escuela de Verano</div></div>
-      </div>
-      <h1>Bienvenido/a</h1>
-      <p class="muted">Ingresá al espacio de gestión del personal.</p>
-      <div class="field"><label>Usuario de demostración</label><input id="loginName" value="Gena" autocomplete="off"></div>
-      <div class="field"><label>Perfil de demostración</label>
-        <select id="loginRole"><option value="SUPERADMIN">Superadministrador</option><option value="ADMIN">Administrador</option><option value="COORDINADOR">Coordinador</option><option value="PROFESOR">Profesor</option></select>
-      </div>
-      <button class="btn block" onclick="login()">Ingresar a la demo <span aria-hidden="true">→</span></button>
-      <div class="demo-note"><strong>Prototipo:</strong> el acceso es simulado para probar la interfaz. No hay contraseñas ni autenticación real.</div>
-    </div>
-  </section>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></symbol><symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/></symbol><symbol id="i-swap" viewBox="0 0 24 24"><path d="M7 4L3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></symbol>
+<symbol id="i-form" viewBox="0 0 24 24"><path d="M5 3h14v18H5zM9 8h6M9 12h6M9 16h3"/></symbol><symbol id="i-loan" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><path d="M4 5h16v16H4zM4 10h16M9 3v4M15 3v4"/></symbol><symbol id="i-mega" viewBox="0 0 24 24"><path d="M4 10v4h3l8 4V6L7 10zM18 9a4 4 0 010 6"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><path d="M16 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M9.5 10a3.500 3.500 0 100-7 3.500 3.500 0 000 7M21 20v-2a4 4 0 00-3-3.900"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 16v-5M13 16V8M18 16v-3"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol><symbol id="i-out" viewBox="0 0 24 24"><path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/></symbol>
+<symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 000 18z" fill="currentColor"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol><symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></symbol><symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+</defs></svg>
 
-  <div id="app" class="app hidden">
-    <aside>
-      <div class="side-brand brand">
-        <div class="brand-icon">EV</div>
-        <div><strong>ESCUELA DE VERANO</strong><span>Panel de gestión</span></div>
-      </div>
-      <div class="nav-group">
-        <div class="nav-title">GENERAL</div>
-        <button class="nav-btn active" data-page="dashboard"><span class="nav-icon">▦</span><span>Panel principal</span></button>
-        <button class="nav-btn" data-page="help"><span class="nav-icon">◉</span><span>Solicitar ayuda <span id="helpCount" class="pill red hidden">1</span></span></button>
-      </div>
-      <div class="nav-group">
-        <div class="nav-title">GESTIÓN</div>
-        <button class="nav-btn" data-page="inventory"><span class="nav-icon">▤</span><span>Inventario</span></button>
-        <button class="nav-btn" data-page="movements"><span class="nav-icon">⇄</span><span>Movimientos</span></button>
-        <button class="nav-btn" data-page="templates"><span class="nav-icon">▧</span><span>Plantillas</span></button>
-        <button class="nav-btn" data-page="loans"><span class="nav-icon">↗</span><span>Préstamos</span></button>
-      </div>
-      <div class="nav-group">
-        <div class="nav-title">INSTITUCIÓN</div>
-        <button class="nav-btn" data-page="activities"><span class="nav-icon">▦</span><span>Actividades</span></button>
-        <button class="nav-btn" data-page="announcements"><span class="nav-icon">◈</span><span>Comunicados</span></button>
-      </div>
-      <div class="nav-group admin-only">
-        <div class="nav-title">ADMINISTRACIÓN</div>
-        <button class="nav-btn" data-page="users"><span class="nav-icon">♙</span><span>Personal y permisos</span></button>
-        <button class="nav-btn" data-page="reports"><span class="nav-icon">▥</span><span>Informes y auditoría</span></button>
-        <button class="nav-btn" data-page="settings"><span class="nav-icon">⚙</span><span>Configuración</span></button>
-      </div>
-      <div class="side-bottom">
-        <button class="nav-btn" onclick="logout()"><span class="nav-icon">↪</span><span>Cerrar sesión</span></button>
-      </div>
-    </aside>
+<!-- PROTOTIPO: acceso simulado. Sin autenticación ni datos reales. -->
+<section id="login" class="login"><div class="lcard">
+<div class="brand"><div class="logo">EV</div><div><strong>SISTEMA DE GESTIÓN</strong><div class="muted sm">Escuela de Verano</div></div></div>
+<h2 style="margin:24px 0 4px">Bienvenido/a</h2><p class="muted">Ingresá al espacio de gestión del personal.</p>
+<div class="field"><label for="ln">Usuario de demostración</label><input id="ln" value="Gena" autocomplete="off" maxlength="40"></div>
+<div class="field"><label for="lr">Perfil de demostración</label><select id="lr"><option value="SUPERADMIN">Superadministrador</option><option value="ADMIN">Administrador</option><option value="COORDINADOR">Coordinador</option><option value="PROFESOR">Profesor</option></select></div>
+<button class="btn" style="width:100%;justify-content:center;padding:12px" onclick="login()">Ingresar a la demo</button>
+<div class="note" style="margin-top:14px"><strong>Prototipo:</strong> acceso simulado, sin contraseñas ni autenticación real. No cargues información real o sensible.</div>
+</div></section>
 
-    <main>
-      <header class="topbar">
-        <div><div class="eyebrow">ESCUELA DE VERANO / GESTIÓN INTERNA</div><div class="muted small" id="todayLabel"></div></div>
-        <div class="top-actions">
-          <button class="icon-btn" title="Cambiar tema" onclick="toggleTheme()">◐</button>
-          <button class="icon-btn" title="Notificaciones" onclick="showToast('No hay notificaciones nuevas.')">♧</button>
-          <div class="profile"><div class="avatar" id="avatar">G</div><div class="profile-text"><strong id="userName">Gena</strong><div class="muted small" id="userRole">SUPERADMIN</div></div></div>
-        </div>
-      </header>
-      <section id="pageContent"></section>
-    </main>
-  </div>
+<div id="app" class="app hidden">
+<aside><div class="brand"><div class="logo">EV</div><div><strong class="sm">ESCUELA DE VERANO</strong><div class="muted sm">Panel de gestión</div></div></div><nav id="nav" aria-label="Navegación principal"></nav></aside>
+<main><header class="top"><div><div class="eyebrow">Gestión interna · <span class="tl" id="today"></span></div></div>
+<div class="row"><button class="ib" onclick="toggleTheme()" aria-label="Cambiar tema claro u oscuro" title="Cambiar tema"><svg class="i"><use href="#i-sun"/></svg></button>
+<button class="ib" onclick="go('help')" aria-label="Solicitudes pendientes" title="Notificaciones"><svg class="i"><use href="#i-bell"/></svg><span id="bell" class="badge hidden" style="position:absolute;top:-6px;right:-6px"></span></button>
+<div class="row" style="padding:0 6px"><div class="av" id="av"></div><div class="tl"><strong id="un"></strong><div class="muted sm" id="ur"></div></div></div>
+<button class="ib" onclick="logout()" aria-label="Cerrar sesión" title="Cerrar sesión"><svg class="i"><use href="#i-out"/></svg></button></div></header>
+<div id="alert"></div><section id="page" aria-live="polite"></section></main></div>
+<div id="modalRoot"></div><div id="toasts" role="status" aria-live="polite"></div>
 
-  <div id="modalRoot"></div>
-  <div id="toastRoot"></div>
-
-  <script>
-    const $ = s => document.querySelector(s);
-    let currentUser = {name:"Gena", role:"SUPERADMIN"};
-    let helpRequests = [
-      {id:1, person:"María López", role:"PROFESOR", type:"Materiales", priority:"Normal", detail:"Necesito conos para la actividad de la cancha.", status:"Pendiente", time:"Hoy · 10:32"}
-    ];
-    let movements = [
-      {date:"Hoy · 10:18", user:"María López", action:"Retiró", item:"Pelotas de fútbol", qty:4},
-      {date:"Hoy · 09:45", user:"Carlos Díaz", action:"Devolvió", item:"Conos", qty:12},
-      {date:"Ayer · 16:20", user:"Gena", action:"Registró", item:"Cuerdas", qty:8}
-    ];
-    let items = [
-      {code:"DEP-001",name:"Pelotas de fútbol",category:"Deportivo",total:20,available:14,location:"Depósito A",state:"Bueno"},
-      {code:"DEP-002",name:"Conos de entrenamiento",category:"Deportivo",total:30,available:18,location:"Depósito A",state:"Bueno"},
-      {code:"REC-001",name:"Cuerdas para saltar",category:"Recreativo",total:15,available:15,location:"Armario 2",state:"Bueno"},
-      {code:"NAT-001",name:"Tablas de natación",category:"Natación",total:10,available:3,location:"Pileta",state:"Revisar"},
-      {code:"LIM-001",name:"Elementos de limpieza",category:"Limpieza",total:12,available:4,location:"Depósito B",state:"Bueno"}
-    ];
-    let currentPage = "dashboard";
-
-    function login(){
-      const name = ($("#loginName").value || "Usuario").trim();
-      currentUser = {name,role:$("#loginRole").value};
-      $("#loginScreen").classList.add("hidden");$("#app").classList.remove("hidden");
-      $("#userName").textContent=name;$("#userRole").textContent=currentUser.role;
-      $("#avatar").textContent=name.charAt(0).toUpperCase();
-      document.querySelectorAll(".admin-only").forEach(el=>el.classList.toggle("hidden",!["SUPERADMIN","ADMIN"].includes(currentUser.role)));
-      $("#todayLabel").textContent=new Intl.DateTimeFormat("es-AR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(new Date());
-      renderPage("dashboard");
-    }
-    function logout(){$("#app").classList.add("hidden");$("#loginScreen").classList.remove("hidden")}
-    function toggleTheme(){document.body.classList.toggle("light")}
-    function isAdmin(){return ["SUPERADMIN","ADMIN"].includes(currentUser.role)}
-    document.querySelectorAll(".nav-btn[data-page]").forEach(btn=>btn.addEventListener("click",()=>renderPage(btn.dataset.page)));
-
-    function renderPage(page){
-      currentPage=page;
-      document.querySelectorAll(".nav-btn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
-      const pages={dashboard:dashboardPage,inventory:inventoryPage,movements:movementsPage,help:helpPage,templates:templatesPage,loans:loansPage,activities:activitiesPage,announcements:announcementsPage,users:usersPage,reports:reportsPage,settings:settingsPage};
-      (pages[page]||dashboardPage)();
-    }
-    function pageHead(title,sub,action=""){return `<div class="page-head"><div><div class="eyebrow">GESTIÓN INSTITUCIONAL</div><h2>${title}</h2><p>${sub}</p></div>${action}</div>`}
-    function dashboardPage(){
-      $("#pageContent").innerHTML=`
-        ${pageHead("Panel principal","Resumen general de la escuela de verano.",`<button class="btn secondary" onclick="showToast('En la versión final se generarán informes.')">↓ Exportar</button>`)}
-        <div class="help-banner"><div><strong>¿Necesitás asistencia?</strong><p>Solicitá apoyo al equipo de coordinación.</p></div><button class="btn" onclick="openHelpModal()">＋ Pedir ayuda</button></div>
-        <div class="grid stats">
-          ${stat("Artículos registrados",items.reduce((a,x)=>a+x.total,0),"▤","Inventario general")}
-          ${stat("Disponibles",items.reduce((a,x)=>a+x.available,0),"✓","Unidades disponibles")}
-          ${stat("Solicitudes abiertas",helpRequests.filter(x=>x.status!=="Resuelta").length,"◉","Asistencia interna")}
-          ${stat("Movimientos recientes",movements.length,"⇄","Actividad registrada")}
-        </div>
-        <div class="grid two">
-          <div class="card"><h3>Últimos movimientos</h3>${movementTable(movements.slice(0,4))}</div>
-          <div class="card"><h3>Actividad reciente</h3><div class="activity">
-            <div class="activity-row"><span class="dot"></span><p><strong>Inventario actualizado</strong><br><small>Se registró una devolución · Hoy</small></p></div>
-            <div class="activity-row"><span class="dot" style="background:var(--yellow)"></span><p><strong>Stock bajo</strong><br><small>Tablas de natación · 3 disponibles</small></p></div>
-            <div class="activity-row"><span class="dot" style="background:var(--accent2)"></span><p><strong>Solicitud de ayuda</strong><br><small>Hay ${helpRequests.length} solicitud(es) en el panel</small></p></div>
-          </div></div>
-        </div>
-        <div class="notice" style="margin-top:16px">Vista de demostración: los datos son ficticios y se mantienen solamente en la memoria de esta página.</div>`;
-    }
-    function stat(label,value,icon,foot){return `<div class="card"><div class="stat-top"><span>${label}</span><span class="stat-icon">${icon}</span></div><div class="stat-value">${value}</div><div class="stat-foot">${foot}</div></div>`}
-    function movementTable(rows){return `<div class="table-wrap"><table><thead><tr><th>FECHA</th><th>RESPONSABLE</th><th>OPERACIÓN</th><th>CANT.</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${x.date}</td><td>${x.user}</td><td>${x.action} · ${x.item}</td><td>${x.qty}</td></tr>`).join("")||`<tr><td colspan="4">Sin movimientos.</td></tr>`}</tbody></table></div>`}
-    function inventoryPage(){
-      $("#pageContent").innerHTML=`${pageHead("Inventario","Consultá los materiales, cantidades y ubicaciones.",`<button class="btn" onclick="openItemModal()">＋ Nuevo artículo</button>`)}
-      <div class="toolbar"><input id="itemSearch" placeholder="Buscar artículo..." oninput="filterItems()"><select id="categoryFilter" onchange="filterItems()" style="max-width:190px"><option value="">Todas las categorías</option><option>Deportivo</option><option>Recreativo</option><option>Natación</option><option>Limpieza</option></select></div>
-      <div class="card"><div class="table-wrap"><table><thead><tr><th>CÓDIGO</th><th>ARTÍCULO</th><th>CATEGORÍA</th><th>TOTAL</th><th>DISPONIBLE</th><th>UBICACIÓN</th><th>ESTADO</th><th></th></tr></thead><tbody id="itemRows"></tbody></table></div></div>`;
-      filterItems();
-    }
-    function filterItems(){
-      const q=($("#itemSearch")?.value||"").toLowerCase(),cat=$("#categoryFilter")?.value||"";
-      const rows=items.filter(x=>(x.name.toLowerCase().includes(q)||x.code.toLowerCase().includes(q))&&(!cat||x.category===cat));
-      $("#itemRows").innerHTML=rows.map((x,i)=>`<tr><td>${x.code}</td><td><strong>${x.name}</strong></td><td>${x.category}</td><td>${x.total}</td><td>${x.available}</td><td>${x.location}</td><td><span class="pill ${x.available<=5?"warn":""}">${x.state}</span></td><td><button class="btn secondary small" onclick="openMovementModal(${items.indexOf(x)})">Movimiento</button></td></tr>`).join("")||`<tr><td colspan="8" class="empty">No se encontraron artículos.</td></tr>`;
-    }
-    function movementsPage(){$("#pageContent").innerHTML=`${pageHead("Movimientos","Registro de entradas, salidas y devoluciones.",`<button class="btn" onclick="openMovementModal()">＋ Registrar movimiento</button>`)}<div class="card">${movementTable(movements)}</div>`}
-    function helpPage(){
-      const pending=helpRequests.filter(x=>x.status==="Pendiente").length;
-      $("#pageContent").innerHTML=`${pageHead("Solicitudes de ayuda","Asistencia interna entre profesores, coordinación y administración.",`<button class="btn" onclick="openHelpModal()">＋ Nueva solicitud</button>`)}
-      ${isAdmin()?`<div class="grid stats">${stat("Pendientes",pending,"◉","Esperando atención")}${stat("En atención",helpRequests.filter(x=>x.status==="En atención").length,"◷","En curso")}${stat("Resueltas",helpRequests.filter(x=>x.status==="Resuelta").length,"✓","Finalizadas")}${stat("Total",helpRequests.length,"▤","Solicitudes registradas")}</div>`:""}
-      <div class="card"><h3>Solicitudes registradas</h3><div class="table-wrap"><table><thead><tr><th>FECHA</th><th>PERSONA</th><th>MOTIVO</th><th>PRIORIDAD</th><th>ESTADO</th><th>DETALLE</th><th>ACCIÓN</th></tr></thead><tbody>${helpRequests.map(x=>`<tr><td>${x.time}</td><td>${x.person}</td><td>${x.type}</td><td><span class="pill ${x.priority==="Urgente"?"red":"blue"}">${x.priority}</span></td><td><span class="pill ${x.status==="Pendiente"?"warn":x.status==="Resuelta"?"":"blue"}">${x.status}</span></td><td>${x.detail}</td><td>${isAdmin()&&x.status!=="Resuelta"?`<button class="btn secondary small" onclick="advanceHelp(${x.id})">${x.status==="Pendiente"?"Tomar":"Resolver"}</button>`:"—"}</td></tr>`).join("")||`<tr><td colspan="7" class="empty">Todavía no hay solicitudes.</td></tr>`}</tbody></table></div></div>`;
-      $("#helpCount").classList.toggle("hidden",pending===0);$("#helpCount").textContent=pending;
-    }
-    function templatesPage(){
-      $("#pageContent").innerHTML=`${pageHead("Plantillas","Formularios para registrar operaciones de manera uniforme.",isAdmin()?`<button class="btn" onclick="openTemplateModal()">＋ Crear plantilla</button>`:"")}
-      <div class="grid three">
-        ${templateCard("Registro de salida","Registrar materiales retirados por el personal.","▤")}
-        ${templateCard("Registro de devolución","Registrar materiales que regresan al depósito.","↩")}
-        ${templateCard("Reporte de daños","Informar materiales deteriorados o perdidos.","⚠")}
-      </div><div class="notice" style="margin-top:16px">En esta maqueta las plantillas son ejemplos visuales. El constructor real permitirá agregar campos personalizados y controlar quién puede utilizarlos.</div>`;
-    }
-    function templateCard(title,desc,icon){return `<div class="card"><div class="stat-icon">${icon}</div><h3 style="margin-top:14px">${title}</h3><p class="muted small">${desc}</p><button class="btn secondary small" onclick="showToast('Vista de plantilla de demostración.')">Ver plantilla</button></div>`}
-    function loansPage(){$("#pageContent").innerHTML=`${pageHead("Préstamos y devoluciones","Seguimiento de materiales entregados al personal.")}<div class="card empty">Todavía no hay préstamos registrados en esta demostración.</div>`}
-    function activitiesPage(){$("#pageContent").innerHTML=`${pageHead("Actividades","Organización interna de actividades de verano.")}<div class="grid three">${templateCard("Deportes","Actividades deportivas y materiales asociados.","⚽")}${templateCard("Recreación","Juegos y propuestas recreativas.","☀")}${templateCard("Natación","Actividades en el sector de pileta.","◉")}</div>`}
-    function announcementsPage(){$("#pageContent").innerHTML=`${pageHead("Comunicados","Avisos internos para el personal.")}<div class="card"><h3>Bienvenidos al espacio de gestión</h3><p class="muted">Acá aparecerán los comunicados publicados por coordinación y administración.</p><span class="pill blue">Ejemplo</span></div>`}
-    function usersPage(){
-      if(!isAdmin()){showToast("No tenés permisos para ver esta sección.");return renderPage("dashboard")}
-      $("#pageContent").innerHTML=`${pageHead("Personal y permisos","Administración de cuentas y niveles de acceso.",`<button class="btn" onclick="showToast('La creación real de cuentas se implementará con autenticación segura.')">＋ Crear usuario</button>`)}
-      <div class="card"><h3>Jerarquía de acceso</h3><div class="grid two"><div><strong>SUPERADMIN</strong><p class="muted small">Control total del sistema.</p></div><div><strong>ADMIN</strong><p class="muted small">Administración según permisos asignados.</p></div><div><strong>COORDINADOR</strong><p class="muted small">Supervisión y asistencia.</p></div><div><strong>PROFESOR</strong><p class="muted small">Operaciones habilitadas y solicitud de ayuda.</p></div></div></div>`;
-    }
-    function reportsPage(){if(!isAdmin())return;$("#pageContent").innerHTML=`${pageHead("Informes y auditoría","Consultá la actividad registrada en el sistema.")}<div class="grid three">${stat("Movimientos",movements.length,"⇄","Datos de demostración")}${stat("Solicitudes",helpRequests.length,"◉","Datos de demostración")}${stat("Artículos",items.length,"▤","Artículos de ejemplo")}</div><div class="notice" style="margin-top:16px">La auditoría real será inalterable desde las pantallas habituales y registrará usuario, fecha, acción y cambios.</div>`}
-    function settingsPage(){if(!isAdmin())return;$("#pageContent").innerHTML=`${pageHead("Configuración","Preferencias generales de la plataforma.")}<div class="card"><h3>Apariencia</h3><p class="muted small">Elegí el tema que preferís utilizar.</p><button class="btn secondary" onclick="toggleTheme()">Cambiar tema claro / oscuro</button><hr style="border:0;border-top:1px solid var(--line);margin:20px 0"><h3>Estado del prototipo</h3><span class="pill warn">Modo demostración</span><p class="muted small" style="margin-top:10px">No hay servidor ni base de datos conectados.</p></div>`}
-
-    function openModal(title,body,onSave,label="Guardar"){
-      $("#modalRoot").innerHTML=`<div class="modal-backdrop" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modal-head"><h3>${title}</h3><button class="icon-btn" onclick="closeModal()">✕</button></div>${body}<div class="modal-actions"><button class="btn secondary" onclick="closeModal()">Cancelar</button><button class="btn" id="modalSave">${label}</button></div></div></div>`;
-      $("#modalSave").onclick=onSave;
-    }
-    function closeModal(){$("#modalRoot").innerHTML=""}
-    function openHelpModal(){
-      openModal("Solicitar asistencia",`
-        <div class="field"><label>Tipo de solicitud</label><select id="helpType"><option>Actividad</option><option>Materiales</option><option>Coordinación</option><option>Convivencia</option><option>Otro</option></select></div>
-        <div class="field"><label>Prioridad</label><select id="helpPriority"><option>Normal</option><option>Urgente</option></select></div>
-        <div class="field"><label>Descripción</label><textarea id="helpDetail" rows="3" placeholder="Contá brevemente qué necesitás..."></textarea></div>
-        <div class="notice">Se registrará tu usuario y la hora de envío. En esta demo no se envían alertas a otros dispositivos.</div>`,
-        ()=>{
-          const detail=$("#helpDetail").value.trim();if(!detail){showToast("Escribí una descripción para continuar.");return}
-          helpRequests.unshift({id:Date.now(),person:currentUser.name,role:currentUser.role,type:$("#helpType").value,priority:$("#helpPriority").value,detail,status:"Pendiente",time:"Ahora"});
-          closeModal();showToast("Solicitud agregada a la demostración.");renderPage("help");
-        },"Enviar solicitud");
-    }
-    function advanceHelp(id){
-      if(!isAdmin()){showToast("No tenés permisos.");return}
-      const x=helpRequests.find(x=>x.id===id);if(!x)return;
-      x.status=x.status==="Pendiente"?"En atención":"Resuelta";
-      showToast("Estado actualizado en la demostración.");renderPage("help");
-    }
-    function openItemModal(){
-      if(!isAdmin()){showToast("Solo administración puede crear artículos en esta demo.");return}
-      openModal("Nuevo artículo",`<div class="field"><label>Nombre</label><input id="newItemName" placeholder="Ej. Aros deportivos"></div><div class="field"><label>Categoría</label><select id="newItemCat"><option>Deportivo</option><option>Recreativo</option><option>Natación</option><option>Limpieza</option><option>Didáctico</option></select></div><div class="field"><label>Cantidad inicial</label><input id="newItemQty" type="number" min="0" value="1"></div><div class="field"><label>Ubicación</label><input id="newItemLoc" placeholder="Ej. Depósito A"></div>`,()=>{
-        const name=$("#newItemName").value.trim(),qty=Number($("#newItemQty").value);if(!name||qty<0){showToast("Completá los datos correctamente.");return}
-        items.push({code:"NUE-"+String(items.length+1).padStart(3,"0"),name,category:$("#newItemCat").value,total:qty,available:qty,location:$("#newItemLoc").value||"Sin asignar",state:"Bueno"});
-        closeModal();renderPage("inventory");showToast("Artículo agregado a la demo.");
-      });
-    }
-    function openMovementModal(index){
-      const opts=items.map((x,i)=>`<option value="${i}" ${index===i?"selected":""}>${x.name} (${x.available} disponibles)</option>`).join("");
-      openModal("Registrar movimiento",`<div class="field"><label>Tipo de operación</label><select id="moveType"><option>Salida</option><option>Entrada / devolución</option></select></div><div class="field"><label>Artículo</label><select id="moveItem">${opts}</select></div><div class="field"><label>Cantidad</label><input id="moveQty" type="number" min="1" value="1"></div><div class="field"><label>Destino / motivo</label><input id="moveReason" placeholder="Ej. Actividad en cancha"></div>`,()=>{
-        const item=items[Number($("#moveItem").value)],qty=Number($("#moveQty").value),type=$("#moveType").value;
-        if(!item||qty<1||!Number.isInteger(qty)){showToast("Ingresá una cantidad válida.");return}
-        if(type==="Salida"&&qty>item.available){showToast("No hay suficiente stock disponible.");return}
-        if(type!=="Salida"&&qty+item.available>item.total){showToast("La cantidad supera el stock total registrado.");return}
-        item.available+=type==="Salida"?-qty:qty;
-        movements.unshift({date:"Ahora",user:currentUser.name,action:type==="Salida"?"Retiró":"Devolvió",item:item.name,qty});
-        closeModal();renderPage("inventory");showToast("Movimiento agregado a la demo.");
-      });
-    }
-    function openTemplateModal(){
-      if(!isAdmin())return;
-      openModal("Crear plantilla",`<div class="field"><label>Nombre de la plantilla</label><input id="templateName" placeholder="Ej. Salida de materiales"></div><div class="field"><label>Descripción</label><textarea id="templateDesc" rows="3" placeholder="¿Para qué se utilizará?"></textarea></div><div class="notice">En la versión completa podrás agregar campos, validaciones, opciones y permisos por rol.</div>`,()=>{if(!$("#templateName").value.trim()){showToast("Ingresá un nombre.");return}closeModal();showToast("Plantilla de ejemplo creada visualmente.")});
-    }
-    function showToast(message){
-      $("#toastRoot").innerHTML=`<div class="toast">${message}</div>`;
-      setTimeout(()=>$("#toastRoot").innerHTML="",2800);
-    }
-  </script>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ic=n=>`<svg class="i" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+/* ===== Sonidos (Web Audio, sin archivos, funcionan offline) ===== */
+const Snd={ctx:null,cfg:store.get('ev-snd',{on:true,vol:.5,normal:true}),
+ S:{login:[[523,0,.12],[784,.1,.2]],logout:[[659,0,.12],[440,.1,.2]],notify:[[880,0,.1],[1175,.1,.16]],help:[[660,0,.12],[880,.14,.18]],urgent:[[988,0,.14,'square'],[740,.2,.14,'square'],[988,.4,.14,'square'],[740,.6,.18,'square']],accepted:[[587,0,.1],[740,.1,.1],[880,.2,.16]],resolved:[[523,0,.1],[659,.1,.1],[784,.2,.1],[1047,.3,.22]],move:[[440,0,.07,'triangle'],[554,.07,.1,'triangle']],error:[[220,0,.14,'sawtooth'],[185,.15,.2,'sawtooth']],ok:[[698,0,.08],[880,.08,.14]],open:[[500,0,.06,'triangle']]},
+ init(){try{this.ctx=this.ctx||new(window.AudioContext||window.webkitAudioContext)();if(this.ctx.state==='suspended')this.ctx.resume()}catch(e){}},
+ save(){store.set('ev-snd',this.cfg)},
+ play(n){const c=this.ctx;if(!c||c.state!=='running')return;const u=n==='urgent';if(!u&&(!this.cfg.on||(['notify','help'].includes(n)&&!this.cfg.normal)))return;
+  const v=u?Math.max(this.cfg.vol,.4):this.cfg.vol;(this.S[n]||[]).forEach(([f,t,d,w])=>{const o=c.createOscillator(),g=c.createGain(),s=c.currentTime+t;o.type=w||'sine';o.frequency.value=f;g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(.18*v,s+.015);g.gain.exponentialRampToValueAtTime(.0001,s+d);o.connect(g).connect(c.destination);o.start(s);o.stop(s+d+.02)})}};
+addEventListener('pointerdown',()=>Snd.init(),{once:true});addEventListener('keydown',()=>Snd.init(),{once:true});
+/* ===== Estado de demostración (solo en memoria) ===== */
+const ROLES={SUPERADMIN:'Superadministrador',ADMIN:'Administrador',COORDINADOR:'Coordinador',PROFESOR:'Profesor'};
+let user={name:'Gena',role:'SUPERADMIN'},page='dashboard';
+const isAdmin=()=>['SUPERADMIN','ADMIN'].includes(user.role),isSup=()=>user.role!=='PROFESOR';
+const ago=m=>new Date(Date.now()-m*6e4),fd=d=>d?new Intl.DateTimeFormat('es-AR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(d):'—';
+const dur=(a,b)=>{if(!a||!b)return'—';const m=Math.max(0,Math.round((b-a)/6e4));return m<60?m+' min':Math.floor(m/60)+' h '+m%60+' min'};
+let items=[{code:'DEP-001',name:'Pelotas de fútbol',cat:'Deportivo',total:20,avail:14,dmg:0,loc:'Depósito A',st:'Bueno'},{code:'DEP-002',name:'Conos de entrenamiento',cat:'Deportivo',total:30,avail:18,dmg:0,loc:'Depósito A',st:'Bueno'},{code:'REC-001',name:'Cuerdas para saltar',cat:'Recreativo',total:15,avail:15,dmg:0,loc:'Armario 2',st:'Bueno'},{code:'NAT-001',name:'Tablas de natación',cat:'Natación',total:10,avail:3,dmg:2,loc:'Pileta',st:'Revisar'},{code:'LIM-001',name:'Elementos de limpieza',cat:'Limpieza',total:12,avail:4,dmg:0,loc:'Depósito B',st:'Bueno'}];
+let mov=[{d:ago(18),u:'María López',a:'Salida',it:'Pelotas de fútbol',q:4},{d:ago(50),u:'Carlos Díaz',a:'Devolución',it:'Conos de entrenamiento',q:12},{d:ago(1500),u:'Gena',a:'Salida',it:'Tablas de natación',q:5},{d:ago(2900),u:'María López',a:'Salida',it:'Pelotas de fútbol',q:6},{d:ago(4400),u:'Carlos Díaz',a:'Salida',it:'Conos de entrenamiento',q:12},{d:ago(5800),u:'Gena',a:'Daño',it:'Tablas de natación',q:2},{d:ago(7300),u:'Ana Ruiz',a:'Salida',it:'Elementos de limpieza',q:8}];
+let helps=[{id:1,who:'María López',role:'PROFESOR',type:'Materiales',pri:'Normal',det:'Necesito conos para la actividad de la cancha.',st:'Pendiente',at:ago(12)},{id:2,who:'Carlos Díaz',role:'PROFESOR',type:'Convivencia',pri:'Urgente',det:'Se necesita apoyo en la pileta.',st:'Resuelta',at:ago(200),by:'Gena',tk:ago(196),rs:ago(180),note:'Se envió a un coordinador.'}];
+let tpls=[{name:'Registro de salida',desc:'Materiales retirados por el personal.',fields:[{t:'text',label:'Artículo',req:1},{t:'number',label:'Cantidad',req:1},{t:'text',label:'Destino'}]},{name:'Registro de devolución',desc:'Materiales que regresan al depósito.',fields:[{t:'text',label:'Artículo',req:1},{t:'number',label:'Cantidad',req:1},{t:'select',label:'Estado',req:1,opts:'Bueno, Regular, Dañado'}]},{name:'Reporte de daños',desc:'Materiales deteriorados o perdidos.',fields:[{t:'text',label:'Artículo',req:1},{t:'section',label:'Detalle'},{t:'check',label:'Requiere reposición'}]}];
+let audit=[];const log=a=>audit.unshift({d:new Date(),u:user.name,a});
+const pend=()=>helps.filter(h=>h.st==='Pendiente'),urg=()=>pend().filter(h=>h.pri==='Urgente');
+/* ===== Infraestructura UI ===== */
+const NAV=[['GENERAL'],['dashboard','Panel','home'],['help','Ayuda','help'],['GESTIÓN'],['inventory','Inventario','box'],['movements','Movimientos','swap'],['templates','Plantillas','form'],['loans','Préstamos','loan'],['INSTITUCIÓN'],['activities','Actividades','cal'],['news','Comunicados','mega'],['ADMINISTRACIÓN'],['users','Personal','users',1],['reports','Informes','chart',1],['CUENTA'],['settings','Configuración','gear']];
+function buildNav(){$('#nav').innerHTML=NAV.map(n=>n.length===1?`<div class="gt">${n[0]}</div>`:(n[3]&&!isAdmin()?'':`<button class="nb" data-p="${n[0]}" onclick="go('${n[0]}')">${ic(n[2])}<span>${n[1]}</span>${n[0]==='help'?'<span id="hc" class="badge hidden"></span>':''}</button>`)).join('')}
+function toast(m,t=''){const e=document.createElement('div');e.className='toast '+t;e.textContent=m;$('#toasts').append(e);setTimeout(()=>e.remove(),3200)}
+function bad(id,msg){const e=$('#'+id);e.setAttribute('aria-invalid','true');let n=e.parentNode.querySelector('.err');if(!n){n=document.createElement('small');n.className='err';e.parentNode.append(n)}n.textContent=msg;e.focus();Snd.play('error')}
+addEventListener('input',e=>{if(e.target.getAttribute&&e.target.getAttribute('aria-invalid')){e.target.removeAttribute('aria-invalid');e.target.parentNode.querySelector('.err')?.remove()}});
+let lastFocus=null;
+function modal(title,body,save,label='Guardar'){lastFocus=document.activeElement;$('#modalRoot').innerHTML=`<div class="mb" onmousedown="if(event.target===this)closeModal()"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="mh"><h3 id="mt">${title}</h3><button class="ib" onclick="closeModal()" aria-label="Cerrar">${ic('x')}</button></div>${body}<div class="ma"><button class="btn s" onclick="closeModal()">Cancelar</button>${save?`<button class="btn" id="msave">${label}</button>`:''}</div></div></div>`;
+ if(save)$('#msave').onclick=save;Snd.play('open');($('.modal input,.modal select,.modal textarea')||$('.modal button')).focus()}
+function closeModal(){$('#modalRoot').innerHTML='';lastFocus&&lastFocus.focus&&lastFocus.focus()}
+addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#modalRoot').firstChild)closeModal()});
+const confirmBox=(t,m,fn)=>modal(t,`<p class="muted">${m}</p>`,()=>{closeModal();fn()},'Confirmar');
+const head=(t,s,a='')=>`<div class="head"><div><div class="eyebrow">Gestión institucional</div><h2>${t}</h2><p>${s}</p></div>${a}</div>`;
+const stat=(l,v,i,f,n=0)=>`<div class="card" style="--n:${n}"><div class="row" style="justify-content:space-between"><span class="muted sm"><b>${l}</b></span><span class="si">${ic(i)}</span></div><div class="sv">${v}</div><div class="muted sm">${f}</div></div>`;
+const emptyBox=(i,t)=>`<div class="empty">${ic(i)}<div>${t}</div></div>`;
+function theme(t){document.documentElement.dataset.theme=t;store.set('ev-theme',t);document.querySelector('meta[name=theme-color]').content=t==='dark'?'#0a0f1e':'#f2f5fb'}
+function toggleTheme(){theme(document.documentElement.dataset.theme==='dark'?'light':'dark')}
+theme(store.get('ev-theme',matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'));
+function login(){const n=$('#ln').value.trim();if(n.length<2)return bad('ln','Ingresá un nombre de al menos 2 caracteres.');
+ user={name:n,role:$('#lr').value};$('#login').classList.add('hidden');$('#app').classList.remove('hidden');$('#un').textContent=n;$('#ur').textContent=ROLES[user.role];$('#av').textContent=n[0].toUpperCase();
+ $('#today').textContent=new Intl.DateTimeFormat('es-AR',{weekday:'long',day:'numeric',month:'long'}).format(new Date());buildNav();Snd.init();Snd.play('login');log('Inicio de sesión (demo)');go('dashboard')}
+function logout(){log('Cierre de sesión (demo)');Snd.play('logout');$('#app').classList.add('hidden');$('#login').classList.remove('hidden')}
+function go(p){if(['users','reports'].includes(p)&&!isAdmin()){toast('No tenés permisos para esta sección.','er');p='dashboard'}page=p;
+ document.querySelectorAll('.nb').forEach(b=>b.dataset.p===p?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current'));
+ $('#page').innerHTML='<div class="g"><div class="sk"></div><div class="sk" style="height:200px"></div></div>';scrollTo(0,0);
+ setTimeout(()=>{if(page!==p)return;({dashboard:dash,help:helpPg,inventory:invPg,movements:movPg,templates:tplPg,loans:loanPg,activities:actPg,news:newsPg,users:usersPg,reports:repPg,settings:setPg}[p])();refresh()},120)}
+const out=h=>$('#page').innerHTML=h;
+function refresh(){const p=pend().length,u=urg().length;['#hc','#bell'].forEach(s=>{const e=$(s);if(e){e.textContent=p;e.classList.toggle('hidden',!p)}});
+ $('#alert').innerHTML=u&&isSup()?`<div class="ban" role="alert"><div><span class="dot"></span><strong>${u} solicitud${u>1?'es':''} urgente${u>1?'s':''} pendiente${u>1?'s':''}</strong></div>${page!=='help'?`<button class="btn sm d" onclick="go('help')">Atender</button>`:''}</div>`:''}
+/* ===== Panel ===== */
+function chart(){const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return d}),v=days.map(d=>mov.filter(m=>m.d.toDateString()===d.toDateString()).reduce((a,m)=>a+m.q,0)),mx=Math.max(...v,1);
+ return`<svg viewBox="0 0 280 120" class="chart" role="img" aria-label="Unidades movidas en los últimos 7 días"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--acc2)"/><stop offset="1" stop-color="var(--acc)"/></linearGradient></defs>${v.map((x,i)=>{const h=x/mx*74;return`<rect x="${i*40+8}" y="${96-h}" width="24" height="${h}" rx="5" fill="url(#g)"/><text x="${i*40+20}" y="${91-h}" text-anchor="middle" font-size="9" fill="var(--text)">${x||''}</text><text x="${i*40+20}" y="112" text-anchor="middle" font-size="9" fill="var(--muted)">${days[i].toLocaleDateString('es-AR',{weekday:'short'})}</text>`}).join('')}</svg>`}
+const movT=r=>`<div class="tw"><table><thead><tr><th>Fecha</th><th>Responsable</th><th>Operación</th><th>Cant.</th></tr></thead><tbody>${r.map(m=>`<tr><td>${fd(m.d)}</td><td>${esc(m.u)}</td><td>${m.a} · ${esc(m.it)}</td><td>${m.q}</td></tr>`).join('')||`<tr><td colspan="4">${emptyBox('swap','Sin movimientos.')}</td></tr>`}</tbody></table></div>`;
+function dash(){const T=k=>items.reduce((a,x)=>a+x[k],0),loan=T('total')-T('avail')-T('dmg'),low=items.filter(i=>i.avail/i.total<=.3),use={};mov.filter(m=>m.a==='Salida').forEach(m=>use[m.it]=(use[m.it]||0)+m.q);const top=Object.entries(use).sort((a,b)=>b[1]-a[1]).slice(0,4),mxu=top[0]?top[0][1]:1;
+ out(head('Panel principal','Resumen general de la escuela de verano.')+`<div class="cta"><div><strong>¿Necesitás asistencia?</strong><p class="muted sm">Pedí apoyo al equipo de coordinación.</p></div><button class="btn" onclick="helpModal()">${ic('plus')} Pedir ayuda</button></div>
+ <div class="g stats">${stat('Artículos',T('total'),'box','Unidades registradas',0)}${stat('Disponible',T('avail'),'home','Stock en depósito',1)}${stat('Prestado',loan,'loan','Fuera del depósito',2)}${stat('Dañado',T('dmg'),'help','Requiere revisión',3)}${stat('Pendientes',pend().length,'bell','Solicitudes abiertas',4)}${stat('Urgentes',urg().length,'mega','Atención inmediata',5)}</div>
+ <div class="g two"><div class="card"><h3>Unidades movidas · 7 días</h3>${chart()}</div><div class="card"><h3>Más utilizados</h3>${top.map(([n,q])=>`<div style="margin-bottom:10px"><div class="row sm" style="justify-content:space-between"><span>${esc(n)}</span><b>${q}</b></div><div class="sb"><i style="width:${q/mxu*100}%;background:var(--acc)"></i></div></div>`).join('')||emptyBox('chart','Sin datos.')}</div></div>
+ <div class="g two" style="margin-top:14px"><div class="card"><h3>Movimientos recientes</h3>${movT(mov.slice(0,5))}</div><div class="g"><div class="card"><h3>Stock bajo</h3>${low.map(i=>`<div class="row sm" style="justify-content:space-between;margin-bottom:6px"><span>${esc(i.name)}</span><span class="pill w">${i.avail} de ${i.total}</span></div>`).join('')||'<p class="muted sm">Sin alertas.</p>'}</div><div class="card"><h3>Actividad del personal</h3>${[...mov.slice(0,3).map(m=>[m.d,`${m.u}: ${m.a.toLowerCase()} de ${m.it}`]),...helps.map(h=>[h.at,`${h.who} solicitó ayuda`])].sort((a,b)=>b[0]-a[0]).slice(0,4).map(([d,t])=>`<p class="sm" style="margin-bottom:6px">${esc(t)}<br><span class="muted">${fd(d)}</span></p>`).join('')}</div></div></div>
+ <div class="note" style="margin-top:14px">Datos ficticios en memoria: se pierden al recargar la página.</div>`)}
+/* ===== Inventario ===== */
+const inv={q:'',cat:'',loc:'',key:'name',dir:1,view:'table'},stP=s=>s==='Bueno'?'':s==='Revisar'?'w':'r',sbar=i=>{const p=i.avail/i.total*100;return`<div class="sb" title="${i.avail} de ${i.total}"><i style="width:${p}%;background:${p<=30?'var(--bad)':p<=60?'var(--warn)':'var(--ok)'}"></i></div>`};
+function invPg(){const op=(a,k)=>`<option value="">${k}</option>`+[...new Set(items.map(i=>i[a]))].map(c=>`<option ${inv[a]===c?'selected':''}>${esc(c)}</option>`).join('');
+ out(head('Inventario','Materiales, cantidades y ubicaciones.',isAdmin()?`<button class="btn" onclick="itemModal()">${ic('plus')} Nuevo artículo</button>`:'')+`<div class="bar"><div class="search">${ic('search')}<input id="iq" type="search" placeholder="Buscar por nombre o código" aria-label="Buscar artículo" value="${esc(inv.q)}"></div><select id="ic" aria-label="Categoría">${op('cat','Todas las categorías')}</select><select id="il" aria-label="Ubicación">${op('loc','Todas las ubicaciones')}</select><div class="seg"><button aria-label="Vista de tabla" aria-pressed="${inv.view==='table'}" onclick="inv.view='table';invPg()">${ic('list')}</button><button aria-label="Vista de tarjetas" aria-pressed="${inv.view==='cards'}" onclick="inv.view='cards';invPg()">${ic('grid')}</button></div></div><div id="io"></div>`);
+ $('#iq').oninput=e=>{inv.q=e.target.value;invList()};$('#ic').onchange=e=>{inv.cat=e.target.value;invList()};$('#il').onchange=e=>{inv.loc=e.target.value;invList()};invList()}
+function sortBy(k){inv.dir=inv.key===k?-inv.dir:1;inv.key=k;invList()}
+function invList(){const q=inv.q.toLowerCase(),r=items.filter(i=>(i.name+i.code).toLowerCase().includes(q)&&(!inv.cat||i.cat===inv.cat)&&(!inv.loc||i.loc===inv.loc)).sort((a,b)=>(a[inv.key]>b[inv.key]?1:-1)*inv.dir);
+ const act=i=>`<button class="btn s sm" onclick="movModal(${items.indexOf(i)})">Movimiento</button>${isAdmin()?` <button class="btn s sm" aria-label="Eliminar ${esc(i.name)}" onclick="delItem(${items.indexOf(i)})">${ic('x')}</button>`:''}`;
+ const th=(k,l)=>`<th aria-sort="${inv.key===k?(inv.dir>0?'ascending':'descending'):'none'}"><button onclick="sortBy('${k}')">${l}${inv.key===k?(inv.dir>0?' ↑':' ↓'):''}</button></th>`;
+ $('#io').innerHTML=!r.length?`<div class="card">${emptyBox('search','No se encontraron artículos con esos filtros.')}</div>`:inv.view==='cards'?`<div class="g three">${r.map((i,n)=>`<div class="card" style="--n:${n}"><div class="row"><div class="logo" style="width:46px;height:46px">${esc(i.name[0])}</div><div><strong>${esc(i.name)}</strong><div class="muted sm">${esc(i.code)} · ${esc(i.cat)}</div></div></div><div class="row sm" style="justify-content:space-between;margin:12px 0 6px"><span>${i.avail} de ${i.total} disponibles</span><span class="pill ${stP(i.st)}">${i.st}</span></div>${sbar(i)}<p class="muted sm" style="margin:8px 0 12px">${esc(i.loc)}</p>${act(i)}</div>`).join('')}</div>`
+ :`<div class="card"><div class="tw"><table><thead><tr>${th('code','Código')}${th('name','Artículo')}${th('cat','Categoría')}${th('avail','Stock')}${th('loc','Ubicación')}${th('st','Estado')}<th></th></tr></thead><tbody>${r.map(i=>`<tr><td>${esc(i.code)}</td><td><b>${esc(i.name)}</b></td><td>${esc(i.cat)}</td><td style="min-width:130px">${i.avail}/${i.total}${sbar(i)}</td><td>${esc(i.loc)}</td><td><span class="pill ${stP(i.st)}">${i.st}</span></td><td>${act(i)}</td></tr>`).join('')}</tbody></table></div></div>`}
+function delItem(i){const x=items[i];confirmBox('Eliminar artículo',`¿Eliminar “${esc(x.name)}” del inventario de la demo?`,()=>{items.splice(i,1);log('Eliminó artículo '+x.name);Snd.play('ok');toast('Artículo eliminado (demo).','ok');invPg()})}
+function itemModal(){modal('Nuevo artículo',`<div class="field"><label for="nn">Nombre</label><input id="nn" placeholder="Ej. Aros deportivos" maxlength="60"></div><div class="field"><label for="nc">Categoría</label><input id="nc" list="cl" placeholder="Ej. Deportivo"><datalist id="cl">${[...new Set(items.map(i=>i.cat))].map(c=>`<option>${esc(c)}</option>`).join('')}</datalist></div><div class="field"><label for="nq">Cantidad inicial</label><input id="nq" type="number" min="1" value="1"></div><div class="field"><label for="nl">Ubicación</label><input id="nl" placeholder="Ej. Depósito A" maxlength="40"></div>`,()=>{
+ const n=$('#nn').value.trim(),c=$('#nc').value.trim(),q=+$('#nq').value,l=$('#nl').value.trim();if(!n)return bad('nn','Ingresá el nombre del artículo.');if(!c)return bad('nc','Indicá una categoría.');if(!Number.isInteger(q)||q<1)return bad('nq','La cantidad debe ser un entero mayor a 0.');
+ items.push({code:c.slice(0,3).toUpperCase()+'-'+String(items.length+1).padStart(3,'0'),name:n,cat:c,total:q,avail:q,dmg:0,loc:l||'Sin asignar',st:'Bueno'});log('Creó artículo '+n);closeModal();Snd.play('ok');toast('Artículo agregado (demo).','ok');invPg()})}
+function movModal(idx){modal('Registrar movimiento',`<div class="field"><label for="mt2">Operación</label><select id="mt2"><option>Salida</option><option>Devolución</option><option>Daño</option></select></div><div class="field"><label for="mi">Artículo</label><select id="mi">${items.map((x,i)=>`<option value="${i}" ${i===idx?'selected':''}>${esc(x.name)} (${x.avail} disp.)</option>`).join('')}</select></div><div class="field"><label for="mq">Cantidad</label><input id="mq" type="number" min="1" value="1"></div><div class="field"><label for="mr">Destino o motivo</label><input id="mr" maxlength="80"></div>
+ <div class="note">Registrará automáticamente: <b>${esc(user.name)}</b> · fecha y hora actuales (no editables).</div>`,()=>{
+ const it=items[+$('#mi').value],q=+$('#mq').value,t=$('#mt2').value,loan=it.total-it.avail-it.dmg;if(!Number.isInteger(q)||q<1)return bad('mq','Ingresá una cantidad entera mayor a 0.');
+ if(t!=='Devolución'&&q>it.avail)return bad('mq','Solo hay '+it.avail+' disponibles.');if(t==='Devolución'&&q>loan)return bad('mq','Solo hay '+loan+' unidades prestadas.');
+ if(t==='Devolución')it.avail+=q;else{it.avail-=q;if(t==='Daño'){it.dmg+=q;it.st='Revisar'}}
+ mov.unshift({d:new Date(),u:user.name,a:t,it:it.name,q});log(t+' de '+q+' × '+it.name);closeModal();Snd.play('move');toast('Movimiento registrado (demo).','ok');go(page)})}
+const movPg=()=>out(head('Movimientos','Entradas, salidas y daños.',`<button class="btn" onclick="movModal()">${ic('plus')} Registrar</button>`)+`<div class="card">${movT(mov)}</div>`);
+function loanPg(){const r=items.filter(i=>i.total-i.avail-i.dmg>0);out(head('Préstamos','Materiales fuera del depósito, calculados desde el inventario.')+`<div class="card">${r.length?`<div class="tw"><table><thead><tr><th>Artículo</th><th>Prestado</th><th>Ubicación</th><th></th></tr></thead><tbody>${r.map(i=>`<tr><td><b>${esc(i.name)}</b></td><td>${i.total-i.avail-i.dmg}</td><td>${esc(i.loc)}</td><td><button class="btn s sm" onclick="movModal(${items.indexOf(i)})">Registrar devolución</button></td></tr>`).join('')}</tbody></table></div>`:emptyBox('loan','No hay materiales prestados.')}</div>`)}
+/* ===== Solicitudes de ayuda ===== */
+function helpModal(){modal('Solicitar ayuda',`<div class="field"><label for="ht">Tipo</label><select id="ht"><option>Actividad</option><option>Materiales</option><option>Coordinación</option><option>Convivencia</option><option>Otro</option></select></div><div class="field"><label for="hp">Prioridad</label><select id="hp"><option>Normal</option><option>Urgente</option></select></div><div class="field"><label for="hd">Descripción</label><textarea id="hd" rows="3" maxlength="300" placeholder="Contá brevemente qué necesitás"></textarea></div><div class="note">Se registran tu usuario y la hora de envío. En esta demo no se avisa a otros dispositivos: las notificaciones en tiempo real requieren el servidor.</div>`,()=>{
+ const d=$('#hd').value.trim();if(d.length<5)return bad('hd','Describí la solicitud (mínimo 5 caracteres).');const pr=$('#hp').value;
+ helps.unshift({id:Date.now(),who:user.name,role:user.role,type:$('#ht').value,pri:pr,det:d,st:'Pendiente',at:new Date()});log('Solicitud de ayuda ('+pr+')');closeModal();Snd.play(pr==='Urgente'?'urgent':'help');toast(pr==='Urgente'?'Solicitud urgente registrada (demo).':'Solicitud registrada (demo).',pr==='Urgente'?'er':'ok');go('help')},'Enviar')}
+function helpStep(id){const h=helps.find(x=>x.id===id);if(!h||!isSup())return;
+ if(h.st==='Pendiente'){h.st='En atención';h.by=user.name;h.tk=new Date();log('Tomó solicitud de '+h.who);Snd.play('accepted');toast('Solicitud aceptada.','ok');return go('help')}
+ modal('Resolver solicitud',`<div class="field"><label for="hn">Registro de resolución</label><textarea id="hn" rows="3" maxlength="300" placeholder="¿Qué se hizo?"></textarea></div>`,()=>{const n=$('#hn').value.trim();if(n.length<3)return bad('hn','Registrá cómo se resolvió.');h.st='Resuelta';h.rs=new Date();h.note=n;log('Resolvió solicitud de '+h.who);closeModal();Snd.play('resolved');toast('Solicitud resuelta.','ok');go('help')},'Marcar resuelta')}
+function helpPg(){const list=isSup()?helps:helps.filter(h=>h.who===user.name),sp=h=>`<span class="pill ${h.st==='Pendiente'?'w':h.st==='Resuelta'?'':'b'}">${h.st}</span>`;
+ out(head('Solicitudes de ayuda',isSup()?'Gestioná las solicitudes del personal.':'Tu historial de solicitudes.',`<button class="btn" onclick="helpModal()">${ic('plus')} Nueva solicitud</button>`)+(isSup()?`<div class="g stats">${stat('Pendientes',pend().length,'bell','Sin atender',0)}${stat('Urgentes',urg().length,'mega','Prioridad alta',1)}${stat('En atención',helps.filter(h=>h.st==='En atención').length,'help','En curso',2)}${stat('Resueltas',helps.filter(h=>h.st==='Resuelta').length,'home','Finalizadas',3)}</div>`:'')+
+ `<div class="card">${list.length?`<div class="tw"><table><thead><tr><th>Fecha</th><th>Solicitante</th><th>Motivo</th><th>Prioridad</th><th>Estado</th><th>Responsable</th><th>Respuesta</th><th>Resolución</th>${isSup()?'<th></th>':''}</tr></thead><tbody>${list.map(h=>`<tr${h.pri==='Urgente'&&h.st==='Pendiente'?' style="background:color-mix(in srgb,var(--bad) 8%,transparent)"':''}><td>${fd(h.at)}</td><td>${esc(h.who)}<div class="muted sm">${ROLES[h.role]}</div></td><td>${h.type}<div class="muted sm">${esc(h.det)}</div></td><td><span class="pill ${h.pri==='Urgente'?'r':'b'}">${h.pri}</span></td><td>${sp(h)}</td><td>${esc(h.by||'—')}</td><td>${dur(h.at,h.tk)}</td><td>${h.rs?esc(h.note)+`<div class="muted sm">${fd(h.rs)}</div>`:'—'}</td>${isSup()?`<td>${h.st!=='Resuelta'?`<button class="btn sm" onclick="helpStep(${h.id})">${h.st==='Pendiente'?'Tomar':'Resolver'}</button>`:''}</td>`:''}</tr>`).join('')}</tbody></table></div>`:emptyBox('help','Todavía no hay solicitudes.')}</div>`)}
+/* ===== Plantillas (constructor) ===== */
+const FT={text:'Texto',number:'Número',select:'Selector',date:'Fecha',check:'Casilla',section:'Sección'};let draft=null;
+const tplPg=()=>{draft=null;out(head('Plantillas','Formularios para registrar movimientos de inventario.',isAdmin()?`<button class="btn" onclick="builder()">${ic('plus')} Crear plantilla</button>`:'')+`<div class="g three">${tpls.map((t,i)=>`<div class="card" style="--n:${i}"><div class="si">${ic('form')}</div><h3 style="margin-top:12px">${esc(t.name)}</h3><p class="muted sm" style="margin-bottom:12px">${esc(t.desc||'Sin descripción')} · ${t.fields.length} campos</p><button class="btn s sm" onclick="modal(esc(tpls[${i}].name),'<form onsubmit=&quot;return false&quot;>'+prev(tpls[${i}].fields)+'</form>')">Vista previa</button>${isAdmin()?` <button class="btn s sm" aria-label="Eliminar plantilla" onclick="tpls.splice(${i},1);tplPg();refresh()">${ic('x')}</button>`:''}</div>`).join('')}</div>`)};
+function prev(fs){const now=new Date();let h=`<div class="note">Automáticos (no editables)</div><div class="field"><label>Usuario</label><input readonly value="${esc(user.name)}"></div><div class="row"><div class="field" style="flex:1"><label>Fecha</label><input readonly value="${now.toLocaleDateString('es-AR')}"></div><div class="field" style="flex:1"><label>Hora</label><input readonly value="${now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}"></div></div>`;
+ return h+fs.map((f,i)=>{const L=esc(f.label||'(sin título)')+(f.req?' *':''),d=f.desc?`<small class="muted">${esc(f.desc)}</small>`:'';return f.t==='section'?`<h4 class="sec">${L}</h4>${d}`:f.t==='check'?`<div class="field"><label><input type="checkbox" ${f.req?'required':''}> ${L}</label>${d}</div>`:f.t==='select'?`<div class="field"><label>${L}</label><select>${(f.opts||'').split(',').map(o=>o.trim()).filter(Boolean).map(o=>`<option>${esc(o)}</option>`).join('')}</select>${d}</div>`:`<div class="field"><label>${L}</label><input type="${f.t}" ${f.req?'required':''}>${d}</div>`}).join('')}
+function builder(){draft=draft||{name:'',desc:'',fields:[]};out(head('Constructor de plantillas','Diseñá el formulario y mirá la vista previa en vivo.',`<button class="btn s" onclick="tplPg()">Cancelar</button>`)+`<div class="tpl"><div class="card"><h3>Agregar campo</h3><div class="fl">${Object.entries(FT).map(([k,v])=>`<button class="btn s sm" onclick="addF('${k}')">${ic('plus')} ${v}</button>`).join('')}</div></div>
+ <div class="card"><div class="field" style="margin-top:0"><label for="tn">Nombre</label><input id="tn" value="${esc(draft.name)}" oninput="draft.name=this.value" maxlength="60"></div><div class="field"><label for="td">Descripción</label><input id="td" value="${esc(draft.desc)}" oninput="draft.desc=this.value" maxlength="120"></div><div class="fl" id="fl">${draft.fields.map((f,i)=>`<div class="fi"><div class="row" style="justify-content:space-between"><b class="sm">${FT[f.t]}</b><span><button class="btn s sm" aria-label="Subir" onclick="mvF(${i},-1)">↑</button> <button class="btn s sm" aria-label="Bajar" onclick="mvF(${i},1)">↓</button> <button class="btn s sm" aria-label="Quitar campo" onclick="draft.fields.splice(${i},1);builder()">${ic('x')}</button></span></div><input aria-label="Título del campo" placeholder="Título" value="${esc(f.label)}" oninput="draft.fields[${i}].label=this.value;pv()"><input aria-label="Descripción del campo" placeholder="Descripción (opcional)" value="${esc(f.desc||'')}" oninput="draft.fields[${i}].desc=this.value;pv()">${f.t==='select'?`<input aria-label="Opciones" placeholder="Opciones separadas por coma" value="${esc(f.opts||'')}" oninput="draft.fields[${i}].opts=this.value;pv()">`:''}${f.t!=='section'?`<label class="sm"><input type="checkbox" ${f.req?'checked':''} onchange="draft.fields[${i}].req=this.checked?1:0;pv()"> Obligatorio</label>`:''}</div>`).join('')||emptyBox('form','Agregá el primer campo.')}</div><div class="ma"><button class="btn" onclick="saveTpl()">Guardar plantilla</button></div></div>
+ <div class="card"><h3>Vista previa</h3><div id="pv"></div></div></div>`);pv()}
+const pv=()=>{$('#pv').innerHTML=prev(draft.fields)},addF=t=>{draft.fields.push({t,label:'',req:0});builder();Snd.play('open')},mvF=(i,d)=>{const j=i+d;if(j<0||j>=draft.fields.length)return;[draft.fields[i],draft.fields[j]]=[draft.fields[j],draft.fields[i]];builder()};
+function saveTpl(){if(!draft.name.trim())return bad('tn','Ingresá un nombre.');if(!draft.fields.length)return toast('Agregá al menos un campo.','er'),Snd.play('error');if(draft.fields.some(f=>!f.label.trim()))return toast('Todos los campos necesitan título.','er'),Snd.play('error');
+ tpls.push(draft);log('Creó plantilla '+draft.name);draft=null;Snd.play('ok');toast('Plantilla creada (demo, solo en memoria).','ok');tplPg()}
+/* ===== Otras secciones ===== */
+const actPg=()=>out(head('Actividades','Organización interna de actividades.')+`<div class="g three">${['Deportes','Recreación','Natación'].map((n,i)=>`<div class="card" style="--n:${i}"><div class="si">${ic('cal')}</div><h3 style="margin-top:12px">${n}</h3><p class="muted sm">Materiales y horarios asociados (a conectar con el servidor).</p></div>`).join('')}</div>`);
+const newsPg=()=>out(head('Comunicados','Avisos internos para el personal.')+`<div class="card"><h3>Bienvenidos al espacio de gestión</h3><p class="muted">Acá aparecerán los comunicados de coordinación y administración.</p><span class="pill b" style="margin-top:10px">Ejemplo</span></div>`);
+const usersPg=()=>out(head('Personal y permisos','Niveles de acceso (solo vista de demostración).',`<button class="btn" onclick="toast('La creación de cuentas requiere autenticación real en el backend.')">${ic('plus')} Crear usuario</button>`)+`<div class="g three">${Object.entries(ROLES).map(([k,v],i)=>`<div class="card" style="--n:${i}"><span class="pill b">${k}</span><h3 style="margin:10px 0 4px">${v}</h3><p class="muted sm">${{SUPERADMIN:'Control total del sistema.',ADMIN:'Administración según permisos.',COORDINADOR:'Supervisión y atención de solicitudes.',PROFESOR:'Operaciones habilitadas y pedido de ayuda.'}[k]}</p></div>`).join('')}</div>`);
+const repPg=()=>out(head('Informes y auditoría','Actividad de esta sesión de demostración.')+`<div class="g stats">${stat('Movimientos',mov.length,'swap','Demo',0)}${stat('Solicitudes',helps.length,'help','Demo',1)}${stat('Artículos',items.length,'box','Demo',2)}</div><div class="card"><h3>Registro de la sesión</h3>${audit.length?`<div class="tw"><table><thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th></tr></thead><tbody>${audit.map(a=>`<tr><td>${fd(a.d)}</td><td>${esc(a.u)}</td><td>${esc(a.a)}</td></tr>`).join('')}</tbody></table></div>`:emptyBox('chart','Sin actividad.')}<p class="muted sm" style="margin-top:10px">La auditoría real e inalterable se implementará en el backend.</p></div>`);
+function setPg(){const c=Snd.cfg,sw=(id,l,d,ch,dis='')=>`<div class="sw"><div><b>${l}</b><div class="muted sm">${d}</div></div><input id="${id}" type="checkbox" ${ch?'checked':''} ${dis} aria-label="${l}"></div>`;
+ out(head('Configuración','Preferencias de esta sesión.')+`<div class="g two"><div class="card"><h3>Sonidos</h3>${sw('s1','Sonidos de la interfaz','Activa o silencia los sonidos.',c.on)}${sw('s2','Notificaciones normales','Avisos y solicitudes de prioridad normal.',c.normal)}${sw('s3','Alertas urgentes','Permanecen activas por política institucional.',true,'disabled')}<div class="sw"><b>Volumen</b><input id="sv" type="range" min="0" max="1" step=".05" value="${c.vol}" aria-label="Volumen"></div>
+ <p class="lbl" style="margin:14px 0 8px">Probar sonidos (el audio se activa tras tu primera interacción)</p><div class="row" style="flex-wrap:wrap">${[['login','Ingreso'],['logout','Cierre'],['notify','Notificación'],['help','Ayuda'],['urgent','Urgente'],['accepted','Aceptada'],['resolved','Resuelta'],['move','Movimiento'],['error','Error'],['ok','Confirmación'],['open','Ventana']].map(([k,l])=>`<button class="btn s sm" onclick="Snd.init();Snd.play('${k}')">${l}</button>`).join('')}</div></div>
+ <div class="card"><h3>Apariencia</h3><button class="btn s" onclick="toggleTheme()">${ic('sun')} Cambiar tema</button><h3 style="margin-top:22px">Estado del prototipo</h3><span class="pill w">Modo demostración</span><p class="muted sm" style="margin-top:8px">Sin servidor ni base de datos. Los datos viven en memoria; solo el tema y los sonidos se guardan en este navegador.</p></div></div>`);
+ $('#s1').onchange=e=>{c.on=e.target.checked;Snd.save()};$('#s2').onchange=e=>{c.normal=e.target.checked;Snd.save()};$('#sv').oninput=e=>{c.vol=+e.target.value;Snd.save()};$('#sv').onchange=()=>{Snd.init();Snd.play('ok')}}
+</script>
 </body>
 </html>
