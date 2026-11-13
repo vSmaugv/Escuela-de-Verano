@@ -129,12 +129,12 @@ const Snd={ctx:null,cfg:store.get('ev-snd',{on:true,vol:.5,normal:true}),
  init(){try{this.ctx=this.ctx||new(window.AudioContext||window.webkitAudioContext)();if(this.ctx.state==='suspended')this.ctx.resume()}catch(e){}},
  save(){store.set('ev-snd',this.cfg)},
  bus(){const c=this.ctx;if(this.out)return this.out;const m=c.createGain(),d=c.createDelay(),f=c.createGain(),w=c.createGain();d.delayTime.value=.14;f.gain.value=.28;w.gain.value=.3;m.connect(c.destination);m.connect(d);d.connect(f);f.connect(d);d.connect(w);w.connect(c.destination);return this.out=m},
- alarm(n=1){const c=this.ctx;if(!c||c.state!=='running')return;
-  if(!this.comp){const k=c.createDynamicsCompressor(),m=c.createGain();k.threshold.value=-28;k.knee.value=0;k.ratio.value=20;k.attack.value=.001;k.release.value=.08;m.gain.value=1.4;k.connect(m).connect(c.destination);this.comp=k}
-  this.live=this.live||[];const t0=c.currentTime+.02;
-  for(let i=0;i<6*n;i++){const s=t0+i*.3,up=i%2===0,a=up?700:1500,b=up?1500:700;
-   [['square',a,b,.5],['sawtooth',a/2,b/2,.45],['square',2900,2900,.22]].forEach(([w,f0,f1,g])=>{const o=c.createOscillator(),x=c.createGain();o.type=w;o.frequency.setValueAtTime(f0,s);o.frequency.linearRampToValueAtTime(f1,s+.28);x.gain.setValueAtTime(g,s);x.gain.setValueAtTime(g,s+.26);x.gain.linearRampToValueAtTime(0,s+.3);o.connect(x).connect(this.comp);o.start(s);o.stop(s+.31);this.live.push(o)})}},
- stopAlarm(){(this.live||[]).forEach(o=>{try{o.stop()}catch(e){}});this.live=[]},
+ alarm(k=1){const c=this.ctx;if(!c||c.state!=='running')return;
+  if(!this.comp){const q=c.createDynamicsCompressor(),m=c.createGain();q.threshold.value=-28;q.knee.value=0;q.ratio.value=20;q.attack.value=.001;q.release.value=.08;m.gain.value=1.4;q.connect(m).connect(c.destination);this.comp=q}
+  this.live=this.live||[];const t0=Math.max(c.currentTime+.02,this.nextAt||0);this.nextAt=t0+k*8;
+  for(let j=0;j<k;j++)for(let i=0;i<20;i++){const s=t0+j*8+i*.25,up=i%2===0,a=up?700:1500,b=up?1500:700,last=i===19;
+   [['square',a,b,.5],['sawtooth',a/2,b/2,.45],['square',2900,2900,.22]].forEach(([w,f0,f1,g])=>{const o=c.createOscillator(),x=c.createGain();o.type=w;o.frequency.setValueAtTime(f0,s);o.frequency.linearRampToValueAtTime(f1,s+.25);x.gain.setValueAtTime(g,s);if(last)x.gain.linearRampToValueAtTime(0,s+.25);o.connect(x).connect(this.comp);o.start(s);o.stop(s+.26);this.live.push(o)})}},
+ stopAlarm(){(this.live||[]).forEach(o=>{try{o.stop()}catch(e){}});this.live=[];this.nextAt=0},
  play(n){const c=this.ctx;if(!c||c.state!=='running')return;if(n==='urgent')return this.alarm(1);if(!this.cfg.on||(['notify','help'].includes(n)&&!this.cfg.normal))return;
   const v=this.cfg.vol,out=this.bus();(this.S[n]||[]).forEach(([f,t,d,w,to])=>{const s=c.currentTime+t,hard=w==='sawtooth'||w==='square',tone=(fr,gn)=>{const o=c.createOscillator(),g=c.createGain();o.type=w||'sine';o.frequency.setValueAtTime(fr,s);if(to)o.frequency.linearRampToValueAtTime(to*fr/f,s+d);g.gain.setValueAtTime(0,s);g.gain.linearRampToValueAtTime(gn*v*(hard?.5:1),s+.008);g.gain.exponentialRampToValueAtTime(.0001,s+d);o.connect(g).connect(out);o.start(s);o.stop(s+d+.03)};tone(f,.5);if(!hard)tone(f*2,.12)})}};
 addEventListener('pointerdown',()=>Snd.init(),{once:true});addEventListener('keydown',()=>Snd.init(),{once:true});
@@ -260,9 +260,9 @@ function setPg(){const c=Snd.cfg,sw=(id,l,d,ch,dis='')=>`<div class="sw"><div><b
 
 /* ===== Alertas urgentes: sirena repetida + cartel ===== */
 let siren=null,ed=false,dragEl=null,sh=null;const L=i=>String.fromCharCode(65+i),TT='Brisa · Gestión de verano';
-function sirenStop(){clearInterval(siren);siren=null;Snd.stopAlarm();document.title=TT}
-const buzz=()=>{try{navigator.vibrate&&navigator.vibrate([500,150,500,150,500,150,900])}catch(e){}};
-function sirenStart(){sirenStop();let n=0;Snd.alarm(5);buzz();document.title='🚨 URGENTE — Brisa';siren=setInterval(()=>{if(!urg().length||n>=300)return sirenStop();if(++n%9===0){Snd.alarm(5);buzz()}},1000)}
+function sirenStop(){clearInterval(siren);siren=null;Snd.stopAlarm();try{navigator.vibrate&&navigator.vibrate(0)}catch(e){}document.title=TT}
+const buzz=()=>{try{navigator.vibrate&&navigator.vibrate(Array(37).fill([4900,3100]).flat())}catch(e){}};
+function sirenStart(){sirenStop();let n=0;Snd.alarm(3);buzz();document.title='🚨 URGENTE — Brisa';siren=setInterval(()=>{if(!urg().length||++n>=300)return sirenStop();if(Snd.ctx&&Snd.nextAt-Snd.ctx.currentTime<10)Snd.alarm(3)},1000)}
 function urgentShow(h){$('#uov').innerHTML=`<div class="uo" role="alertdialog" aria-modal="true" aria-labelledby="uot"><div class="uc"><div class="ut">⚠ ALERTA URGENTE</div><h2 id="uot">${esc(h.type)} · ${esc(h.who)}</h2><p style="margin:10px 0">${esc(h.det)}</p><p class="muted sm">${fd(h.at)}</p><div class="row" style="justify-content:center;margin-top:18px;flex-wrap:wrap"><button class="btn d" id="ua" onclick="urgentClose(1);helpStep('${h.id}')">Atender ahora</button><button class="btn s" onclick="urgentClose(1)">Silenciar</button></div></div></div>`;$('#ua').focus()}
 function urgentClose(m){$('#uov').innerHTML='';if(m)sirenStop()}
 async function newHelp(o){log('Solicitud de ayuda ('+o.pri+')');if(sb){const{error}=await sb.rpc('create_help',{p_type:o.type,p_pri:o.pri,p_det:o.det,p_who:isDev()&&o.who!==user.name?o.who:null});if(error){toast('No se pudo enviar la solicitud.','er');Snd.play('error');return}await loadT('helps');const h=helps[0];if(h.pri==='Urgente'){sirenStart();if(isSup())urgentShow(h)}else Snd.play('help');refresh();return h}
