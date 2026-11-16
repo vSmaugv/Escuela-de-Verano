@@ -143,7 +143,7 @@ body{zoom:var(--z,1)}.dbg *{outline:1px solid rgba(255,0,120,.35)}.slow *{animat
 <div id="crumb"></div><div id="alert"></div><section id="page" tabindex="-1"></section></main></div>
 <div id="uov"></div><div id="cmd"></div><div id="bellp" class="bellp hidden"></div><div id="vw" class="vw hidden"></div><div id="modalRoot"></div><div id="toasts" role="status" aria-live="polite"></div>
 
-<script src="supabase.js"></script>
+<script src="supabase.js?v=2.75.1"></script>
 <script>
 /* Supabase: pegá acá la URL y la clave "anon" (pública). Vacío = modo demostración. */
 const SB={url:'https://dadowiuwtdkrgjhxvtvz.supabase.co',key:'sb_publishable_Ogo5DcCj2GJevS79PKBeoA_LIl0-qb7'};
@@ -322,7 +322,14 @@ async function signIn(e){e.preventDefault();const em=$('#le').value.trim(),pw=$(
 async function enter(u){const{data:p,error}=await sb.from('profiles').select('name,role,active,must_change').eq('id',u.id).maybeSingle();
  if(error||!p||!p.active||!ROLES[p.role]){await sb.auth.signOut();toast('Tu cuenta no tiene acceso habilitado. Contactá a un administrador.','er');Snd.play('error');return}
  uid=u.id;items=[];mov=[];helps=[];news=[];tpls=[];reps=[];studs=[];acts=[];notifs=[];await loadAll();await loadSettings();start(p.name,p.role);listen();loggingOut=false;idleStart();hbStart();guardInit();if(p.must_change)pwModal()}
-(function(){if(!SB.url||!SB.key)return;if(!window.supabase){$('#ldemo').classList.add('hidden');$('#lerr').classList.remove('hidden');return}sb=supabase.createClient(SB.url,SB.key,{global:{fetch:(u,o)=>netFetch(u,o)}});$('#ldemo').classList.add('hidden');$('#lreal').classList.remove('hidden');sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT'&&!loggingOut&&!$('#app').classList.contains('hidden')){sirenStop();urgentClose();clearInterval(idleT);clearInterval(hbT);chan&&sb.removeChannel(chan);chan=null;$('#app').classList.add('hidden');$('#login').classList.remove('hidden');toast('Tu sesión caducó. Ingresá de nuevo.','er');Snd.play('error')}});sb.auth.getSession().then(({data})=>{if(data.session)enter(data.session.user)})})();
+let authRetried=false;
+function initAuth(retry){if(!SB.url||!SB.key)return;
+ if(!window.supabase){$('#ldemo').classList.add('hidden');
+  if(!retry&&!authRetried){authRetried=true;const sc=document.createElement('script');sc.src='supabase.js?r='+Date.now();sc.onload=sc.onerror=()=>initAuth(true);document.head.appendChild(sc);setTimeout(()=>{if(!window.supabase)initAuth(true)},5000);return}
+  const e=$('#lerr');e.classList.remove('hidden');if(e.dataset.d)return;e.dataset.d=1;
+  if(typeof fetch==='function')fetch('supabase.js?d='+Date.now(),{cache:'no-store'}).then(async r=>{const t=await r.text();e.insertAdjacentHTML('beforeend',`<br><small>Detalle técnico: supabase.js respondió ${r.status} y pesa ${Math.round(t.length/1024)} KB; empieza con «${esc(t.slice(0,25))}».${t.length>100000&&t[0]!=='<'?' El archivo parece correcto: el navegador guardó una copia vieja. Probá en una ventana privada.':' El archivo no es la librería: volvé a subir el correcto.'}</small>`)}).catch(x=>e.insertAdjacentHTML('beforeend','<br><small>Detalle técnico: no se pudo pedir supabase.js ('+esc(x.message)+').</small>'));
+  return}sb=supabase.createClient(SB.url,SB.key,{global:{fetch:(u,o)=>netFetch(u,o)}});$('#ldemo').classList.add('hidden');$('#lreal').classList.remove('hidden');sb.auth.onAuthStateChange(ev=>{if(ev==='SIGNED_OUT'&&!loggingOut&&!$('#app').classList.contains('hidden')){sirenStop();urgentClose();clearInterval(idleT);clearInterval(hbT);chan&&sb.removeChannel(chan);chan=null;$('#app').classList.add('hidden');$('#login').classList.remove('hidden');toast('Tu sesión caducó. Ingresá de nuevo.','er');Snd.play('error')}});sb.auth.getSession().then(({data})=>{if(data.session)enter(data.session.user)})}
+initAuth();
 
 /* ===== Datos reales y tiempo real (Supabase) ===== */
 let uid=null,chan=null,tm=null;
