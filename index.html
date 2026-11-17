@@ -620,7 +620,7 @@ function speakProto(){if(!protoT||!('speechSynthesis' in window))return;const d=
 /* Audio del protocolo: primero suena emergenciainicio.mp3 una sola vez;
    al terminar, emergencialarga.mp3 queda en loop hasta desactivar el protocolo. */
 const ProtoAudio={
- inicio:null,larga:null,started:false,
+ inicio:null,larga:null,started:false,stage:'idle',
  init(){
   if(!this.inicio){
    this.inicio=new Audio('./emergenciainicio.mp3');
@@ -629,9 +629,22 @@ const ProtoAudio={
    this.inicio.volume=1;this.larga.volume=1;
    this.inicio.addEventListener('ended',()=>{
     if(!this.started)return;
+    this.stage='long';
     this.larga.loop=true;
     this.larga.currentTime=0;
-    this.larga.play().catch(()=>{});
+    this.larga.play().catch(err=>{
+     console.warn('No se pudo reproducir emergencialarga.mp3:',err);
+     this.started=false;
+     this.stage='idle';
+    });
+   });
+   this.inicio.addEventListener('error',()=>{
+    console.error('No se pudo cargar emergenciainicio.mp3. Revisá que esté en la misma carpeta que index.html y que el nombre coincida exactamente.');
+    this.started=false;
+    this.stage='idle';
+   });
+   this.larga.addEventListener('error',()=>{
+    console.error('No se pudo cargar emergencialarga.mp3. Revisá que esté en la misma carpeta que index.html y que el nombre coincida exactamente.');
    });
   }
  },
@@ -639,12 +652,20 @@ const ProtoAudio={
   this.init();
   if(this.started)return;
   this.started=true;
+  this.stage='intro';
   this.larga.pause();this.larga.currentTime=0;this.larga.loop=true;
   this.inicio.pause();this.inicio.currentTime=0;
-  this.inicio.play().catch(()=>{});
+  this.inicio.play().catch(err=>{
+   // Si el navegador bloquea el autoplay, se permite reintentar
+   // en el siguiente toque real del usuario.
+   console.warn('El navegador bloqueó el audio inicial; tocá la pantalla para habilitarlo:',err);
+   this.started=false;
+   this.stage='idle';
+  });
  },
  stop(){
   this.started=false;
+  this.stage='idle';
   if(this.inicio){this.inicio.pause();this.inicio.currentTime=0;}
   if(this.larga){this.larga.pause();this.larga.currentTime=0;this.larga.loop=false;}
  }
