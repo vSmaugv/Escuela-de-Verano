@@ -617,10 +617,42 @@ Snd.proto=function(){const c=this.ctx;if(!c||c.state!=='running')return;const t0
  const bell=(f,s,d,g)=>[[f,1],[f*2.01,.35],[f*3.5,.12]].forEach(([fr,m])=>{const o=c.createOscillator(),x=c.createGain();o.type='sine';o.frequency.value=fr;x.gain.setValueAtTime(0,s);x.gain.linearRampToValueAtTime(g*m,s+.008);x.gain.exponentialRampToValueAtTime(.0001,s+d);o.connect(x).connect(out);o.start(s);o.stop(s+d+.05)});
  [0,.95].forEach(b=>[784,988,1175,1568].forEach((f,i)=>bell(f,t0+b+i*.14,.5,.6)));bell(196,t0+1.95,2.4,.9);bell(98,t0+1.95,2.4,.7)};
 function speakProto(){if(!protoT||!('speechSynthesis' in window))return;const d=sites.protocolo;if(!d||!d.active)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance('Atención. Protocolo de emergencia activado. '+d.title+'. '+(d.message||'').split('\n').filter(Boolean).slice(0,4).join('. '));u.lang='es-AR';u.rate=.95;u.volume=.9;const v=speechSynthesis.getVoices().find(x=>/^es/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
-function protoCycle(){if(Snd.ctx&&Snd.ctx.state==='running')lockHeard=true;Snd.proto();vib([500,150,500,150,500,150,900]);setTimeout(speakProto,4400)}
-function protoStart(){protoStop();lockHeard=false;protoT=setInterval(protoCycle,32000);protoCycle()}
-function protoStop(){clearInterval(protoT);protoT=null;try{window.speechSynthesis&&speechSynthesis.cancel();navigator.vibrate&&navigator.vibrate(0)}catch(e){}}
-function lockTap(){Snd.init();vib([300,100,300]);const h=$('#lock .ah');if(h)h.remove();setTimeout(()=>{if(protoT&&!lockHeard&&Snd.ctx&&Snd.ctx.state==='running'){lockHeard=true;protoCycle()}},200)}
+/* Audio del protocolo: primero suena emergenciainicio.mp3 una sola vez;
+   al terminar, emergencialarga.mp3 queda en loop hasta desactivar el protocolo. */
+const ProtoAudio={
+ inicio:null,larga:null,started:false,
+ init(){
+  if(!this.inicio){
+   this.inicio=new Audio('./emergenciainicio.mp3');
+   this.larga=new Audio('./emergencialarga.mp3');
+   this.inicio.preload='auto';this.larga.preload='auto';
+   this.inicio.volume=1;this.larga.volume=1;
+   this.inicio.addEventListener('ended',()=>{
+    if(!this.started)return;
+    this.larga.loop=true;
+    this.larga.currentTime=0;
+    this.larga.play().catch(()=>{});
+   });
+  }
+ },
+ start(){
+  this.init();
+  if(this.started)return;
+  this.started=true;
+  this.larga.pause();this.larga.currentTime=0;this.larga.loop=true;
+  this.inicio.pause();this.inicio.currentTime=0;
+  this.inicio.play().catch(()=>{});
+ },
+ stop(){
+  this.started=false;
+  if(this.inicio){this.inicio.pause();this.inicio.currentTime=0;}
+  if(this.larga){this.larga.pause();this.larga.currentTime=0;this.larga.loop=false;}
+ }
+};
+function protoCycle(){if(Snd.ctx&&Snd.ctx.state==='running')lockHeard=true;vib([500,150,500,150,500,150,900]);setTimeout(speakProto,4400)}
+function protoStart(){protoStop();lockHeard=false;ProtoAudio.start();protoT=setInterval(protoCycle,32000);protoCycle()}
+function protoStop(){clearInterval(protoT);protoT=null;ProtoAudio.stop();try{window.speechSynthesis&&speechSynthesis.cancel();navigator.vibrate&&navigator.vibrate(0)}catch(e){}}
+function lockTap(){Snd.init();if(protoT)ProtoAudio.start();vib([300,100,300]);const h=$('#lock .ah');if(h)h.remove();setTimeout(()=>{if(protoT&&!lockHeard&&Snd.ctx&&Snd.ctx.state==='running'){lockHeard=true;protoCycle()}},200)}
 function lockSos(){newHelp({who:user.name,role:user.role,type:'Otro',pri:'Urgente',det:'Pedido de ayuda urgente durante el protocolo: '+((sites.protocolo&&sites.protocolo.title)||'emergencia')});toast('Pedido de ayuda enviado a coordinación.','ok')}
 function lockHtml(kind,d,prev){const pr=kind==='protocolo',dev=!!user.dev&&user.role==='DEV',real=pr&&!prev,lines=(d.message||'').split('\n').map(x=>x.trim()).filter(Boolean),hr=d.at?new Date(d.at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}):'';
  return`<div class="lockc" tabindex="-1"><div class="lbadge">${pr?'⚠ PROTOCOLO ACTIVADO':'HORARIO DE GUARDIA'}</div><h1 id="lkt">${esc(d.title||(pr?'Emergencia':GUARDIA0.title))}</h1>${pr?`<ol class="lsteps">${lines.map(x=>`<li>${esc(x)}</li>`).join('')}</ol>`:`<div class="lmsg">${lines.map(x=>`<p>${esc(x)}</p>`).join('')}</div>`}<p class="lmeta">${pr?`Activado por ${esc(d.by_name||'coordinación')}${hr?' a las '+hr:''}. Esta pantalla no se puede cerrar: solo el equipo de desarrollo puede desactivar el protocolo.`:'La pausa la activa y la levanta el equipo de desarrollo.'}</p>${pr?`<button class="btn d" onclick="event.stopPropagation();lockSos()">${ic('help')} Necesito ayuda urgente</button>`:''}
@@ -669,7 +701,7 @@ function vibTest(){const ok=vib([400,150,400,150,800]);toast(!navigator.vibrate?
 function vibCard(){const sup=!!navigator.vibrate;return`<div class="card"><h3>Vibración</h3><p class="muted sm" style="margin-bottom:10px">${sup?'Este navegador permite vibrar. Las alertas urgentes y el protocolo hacen vibrar el celular.':isIOS()?'Los iPhone y iPad no permiten vibración desde páginas web. Las alertas igual suenan y se ven en pantalla.':'Este navegador no permite vibración desde páginas web.'}</p>${sup?`<button class="btn s sm" onclick="vibTest()">Probar vibración</button><p class="muted sm" style="margin-top:8px">Si no vibra: sacá el modo silencio o No molestar, activá la vibración en los ajustes del teléfono y tocá la pantalla antes de probar.</p>`:''}</div>`}
 function tapCheck(){const b=$('#tapb'),app=document.getElementById('app');if(!b||!app)return;const act=navigator.userActivation?navigator.userActivation.hasBeenActive:touched,aud=!!(Snd.ctx&&Snd.ctx.state==='running'),need=!app.classList.contains('hidden')&&isSup()&&(!aud||(!!navigator.vibrate&&!act));
  if(need){const t='🔊 Tocá acá para activar el sonido'+(navigator.vibrate?' y la vibración':'')+' de las alertas';if(b.textContent!==t)b.textContent=t}b.classList.toggle('hidden',!need)}
-function tapAct(){touched=true;Snd.init();vib(30);setTimeout(tapCheck,300)}
+function tapAct(){touched=true;Snd.init();if(protoT)ProtoAudio.start();vib(30);setTimeout(tapCheck,300)}
 </script>
 </body>
 </html>
