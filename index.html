@@ -619,12 +619,17 @@ Snd.proto=function(){const c=this.ctx;if(!c||c.state!=='running')return;const t0
 const PAUD={ini:null,lar:null,src:[],playing:false,failed:false,testing:false,err:{}},AUDIO_V='1';
 async function protoLoad(){Snd.init();const c=Snd.ctx;if(!c)return;
  await Promise.all([['ini','emergenciainicio.mp3'],['lar','emergencialarga.mp3']].map(async([k,f])=>{if(PAUD[k])return;try{const r=await fetch(f+'?v='+AUDIO_V,{cache:'force-cache'});if(!r.ok)throw new Error('no se encontró el archivo ('+r.status+')');PAUD[k]=await c.decodeAudioData(await r.arrayBuffer());delete PAUD.err[k]}catch(e){PAUD.err[k]=e&&e.message?e.message:'no se pudo leer'}}))}
-function protoAudioStop(){PAUD.src.forEach(x=>{try{x.stop()}catch(e){}});PAUD.src=[];PAUD.playing=false}
-async function protoAudioStart(){if(PAUD.playing)return;const c=Snd.ctx;if(!c||c.state!=='running')return;PAUD.playing=true;PAUD.failed=false;await protoLoad();if(!PAUD.playing)return;
- if(!PAUD.ini&&!PAUD.lar){PAUD.playing=false;PAUD.failed=true;Snd.proto();dlog('sonido','No se pudieron cargar los MP3 del protocolo: '+JSON.stringify(PAUD.err));return}
- const g=c.createGain();g.gain.value=1;g.connect(c.destination);let t=c.currentTime+.05;const mk=(b,l)=>{const x=c.createBufferSource();x.buffer=b;x.loop=l;x.connect(g);PAUD.src.push(x);return x};
+let VOICE_ABOVE_ALARM=false;const VOICE_VOL=.8,TESTD={test:true,title:PROTO[0].t,message:PROTO[0].m};let voiceT=null,voiceD=null;
+function duck(on){const g=PAUD.g;if(VOICE_ABOVE_ALARM&&g&&Snd.ctx&&g.gain.setTargetAtTime)g.gain.setTargetAtTime(on?.25:1,Snd.ctx.currentTime,.08)}
+function speakProto(d){d=d||sites.protocolo;if(!d||!(d.active||d.test)||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance('Atención. Protocolo de emergencia activado. '+d.title+'. '+(d.message||'').split('\n').filter(Boolean).slice(0,4).join('. '));u.lang='es-AR';u.rate=.95;u.volume=VOICE_VOL;const v=speechSynthesis.getVoices().find(x=>/^es/i.test(x.lang));if(v)u.voice=v;u.onstart=()=>duck(true);u.onend=u.onerror=()=>duck(false);speechSynthesis.speak(u)}catch(e){}}
+function protoVoiceStart(delay,d){protoVoiceStop();voiceD=d||null;const loop=()=>{speakProto(voiceD);voiceT=setTimeout(loop,28000)};voiceT=setTimeout(loop,delay)}
+function protoVoiceStop(){clearTimeout(voiceT);voiceT=null;try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}duck(false)}
+function protoAudioStop(){protoVoiceStop();PAUD.src.forEach(x=>{try{x.stop()}catch(e){}});PAUD.src=[];PAUD.g=null;PAUD.playing=false}
+async function protoAudioStart(){if(PAUD.playing)return;const c=Snd.ctx;if(!c||c.state!=='running')return;PAUD.playing=true;PAUD.failed=false;await protoLoad();if(!PAUD.playing)return;const td=PAUD.testing&&!protoT?TESTD:null;
+ if(!PAUD.ini&&!PAUD.lar){PAUD.playing=false;PAUD.failed=true;Snd.proto();dlog('sonido','No se pudieron cargar los MP3 del protocolo: '+JSON.stringify(PAUD.err));protoVoiceStart(1200,td);return}
+ const g=c.createGain();g.gain.value=1;g.connect(c.destination);PAUD.g=g;let t=c.currentTime+.05;const mk=(b,l)=>{const x=c.createBufferSource();x.buffer=b;x.loop=l;x.connect(g);PAUD.src.push(x);return x};
  if(PAUD.ini){mk(PAUD.ini,false).start(t);t+=PAUD.ini.duration}
- mk(PAUD.lar||PAUD.ini,true).start(t)}
+ mk(PAUD.lar||PAUD.ini,true).start(t);protoVoiceStart(PAUD.ini?PAUD.ini.duration*1000+200:300,td)}
 function protoStart(){protoStop();protoT=setInterval(()=>{vib([500,150,500,150,500,150,900]);if(PAUD.failed&&Snd.ctx&&Snd.ctx.state==='running')Snd.proto()},12000);vib([500,150,500,150,500,150,900]);protoAudioStart()}
 function protoStop(){clearInterval(protoT);protoT=null;if(!PAUD.testing)protoAudioStop();try{navigator.vibrate&&navigator.vibrate(0)}catch(e){}}
 function protoResume(){if(protoT&&!PAUD.playing&&!PAUD.failed&&Snd.ctx&&Snd.ctx.state==='running')protoAudioStart()}
